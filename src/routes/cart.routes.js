@@ -18,4 +18,4 @@ router.post("/remove", removeFromCart);
 router.post("/clear", clearCart);
 router.get("/checkout", getCheckout);
 
-export default router;
+export { router };

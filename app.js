@@ -7,11 +7,12 @@ import engine from "ejs-mate";
 import { PORT, SESSION_SECRET } from "./config.js";
 
 // Import routes
-import homeRoutes from "./src/routes/home.routes.js";
-import authRoutes from "./src/routes/auth.routes.js";
-import productRoutes from "./src/routes/product.routes.js";
-import courseRoutes from "./src/routes/course.routes.js";
-import cartRoutes from "./src/routes/cart.routes.js";
+import routes from "./src/routes/index.js";
+// import homeRoutes from "./src/routes/home.routes.js";
+// import authRoutes from "./src/routes/auth.routes.js";
+// import productRoutes from "./src/routes/product.routes.js";
+// import courseRoutes from "./src/routes/course.routes.js";
+// import cartRoutes from "./src/routes/cart.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -53,11 +54,7 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use("/", homeRoutes);
-app.use("/auth", authRoutes);
-app.use("/products", productRoutes);
-app.use("/courses", courseRoutes);
-app.use("/cart", cartRoutes);
+app.use("/", routes);
 
 // 404 handler
 app.use((req, res) => {

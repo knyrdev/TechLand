@@ -8,4 +8,4 @@ router.get("/", getHomePage);
 router.get("/about", getAboutPage);
 router.get("/contact", getContactPage);
 
-export default router;
+export { router };
