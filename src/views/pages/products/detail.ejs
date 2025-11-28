@@ -1,0 +1,114 @@
+<%- layout('layouts/main') %>
+
+<section class="py-5">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/products">Products</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><%= product.name %></li>
+            </ol>
+        </nav>
+        
+        <div class="row">
+            <!-- Product Image -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body bg-light d-flex align-items-center justify-content-center" style="height: 400px;">
+                        <i class="bi bi-box display-1 text-secondary" style="font-size: 10rem;"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product Details -->
+            <div class="col-lg-6">
+                <span class="badge bg-secondary mb-2"><%= product.category %></span>
+                <h1 class="mb-3"><%= product.name %></h1>
+                
+                <div class="d-flex align-items-center mb-3">
+                    <div class="text-warning me-2">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-half"></i>
+                    </div>
+                    <span class="text-muted">(4.5) - 128 reviews</span>
+                </div>
+                
+                <h2 class="text-primary mb-4">$<%= product.price.toFixed(2) %></h2>
+                
+                <p class="lead mb-4"><%= product.description %></p>
+                
+                <div class="mb-4">
+                    <span class="<%= product.stock > 0 ? 'text-success' : 'text-danger' %>">
+                        <i class="bi bi-<%= product.stock > 0 ? 'check-circle' : 'x-circle' %>"></i>
+                        <%= product.stock > 0 ? `${product.stock} in stock` : 'Out of stock' %>
+                    </span>
+                </div>
+                
+                <form action="/cart/add" method="POST" class="mb-4">
+                    <input type="hidden" name="id" value="<%= product.id %>">
+                    <input type="hidden" name="type" value="product">
+                    
+                    <div class="row g-3 align-items-center mb-3">
+                        <div class="col-auto">
+                            <label for="quantity" class="form-label mb-0">Quantity:</label>
+                        </div>
+                        <div class="col-auto">
+                            <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" max="<%= product.stock %>" style="width: 80px;">
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex">
+                        <button type="submit" class="btn btn-primary btn-lg" <%= product.stock === 0 ? 'disabled' : '' %>>
+                            <i class="bi bi-cart-plus"></i> Add to Cart
+                        </button>
+                        <button type="button" class="btn btn-outline-danger btn-lg">
+                            <i class="bi bi-heart"></i> Wishlist
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Product Features -->
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title"><i class="bi bi-info-circle"></i> Product Features</h6>
+                        <ul class="mb-0">
+                            <li>High-quality materials</li>
+                            <li>1 year warranty</li>
+                            <li>Free shipping on orders over $100</li>
+                            <li>30-day return policy</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Products -->
+        <% if (relatedProducts.length > 0) { %>
+            <section class="mt-5">
+                <h3 class="mb-4">Related Products</h3>
+                <div class="row g-4">
+                    <% relatedProducts.forEach(related => { %>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                                    <i class="bi bi-box display-4 text-secondary"></i>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title"><%= related.name %></h6>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold text-primary">$<%= related.price.toFixed(2) %></span>
+                                        <a href="/products/<%= related.id %>" class="btn btn-sm btn-outline-primary">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </section>
+        <% } %>
+    </div>
+</section>

@@ -1,0 +1,102 @@
+<%- layout('layouts/main') %>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar Filters -->
+            <div class="col-lg-3 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-funnel"></i> Filters</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/products" method="GET">
+                            <!-- Search -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Search</label>
+                                <input type="text" class="form-control" name="search" placeholder="Search products..." value="<%= currentSearch %>">
+                            </div>
+                            
+                            <!-- Category Filter -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Category</label>
+                                <select class="form-select" name="category">
+                                    <option value="">All Categories</option>
+                                    <% categories.forEach(cat => { %>
+                                        <option value="<%= cat %>" <%= currentCategory === cat ? 'selected' : '' %>><%= cat %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                            
+                            <!-- Sort -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Sort By</label>
+                                <select class="form-select" name="sort">
+                                    <option value="">Default</option>
+                                    <option value="price-asc" <%= currentSort === 'price-asc' ? 'selected' : '' %>>Price: Low to High</option>
+                                    <option value="price-desc" <%= currentSort === 'price-desc' ? 'selected' : '' %>>Price: High to Low</option>
+                                    <option value="name" <%= currentSort === 'name' ? 'selected' : '' %>>Name: A-Z</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                            <a href="/products" class="btn btn-outline-secondary w-100 mt-2">Clear Filters</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Products Grid -->
+            <div class="col-lg-9">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-box-seam"></i> Products</h2>
+                    <span class="text-muted"><%= products.length %> products found</span>
+                </div>
+                
+                <% if (products.length === 0) { %>
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> No products found matching your criteria.
+                    </div>
+                <% } else { %>
+                    <div class="row g-4">
+                        <% products.forEach(product => { %>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card h-100 shadow-sm product-card">
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center position-relative" style="height: 200px;">
+                                        <i class="bi bi-box display-1 text-secondary"></i>
+                                        <% if (product.stock < 10) { %>
+                                            <span class="position-absolute top-0 end-0 badge bg-warning m-2">Low Stock</span>
+                                        <% } %>
+                                    </div>
+                                    <div class="card-body">
+                                        <span class="badge bg-secondary mb-2"><%= product.category %></span>
+                                        <h5 class="card-title"><%= product.name %></h5>
+                                        <p class="card-text text-muted small"><%= product.description.substring(0, 60) %>...</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="h5 text-primary mb-0">$<%= product.price.toFixed(2) %></span>
+                                            <span class="text-muted small"><%= product.stock %> in stock</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer bg-white border-0 pt-0">
+                                        <div class="d-grid gap-2">
+                                            <a href="/products/<%= product.id %>" class="btn btn-outline-primary">
+                                                <i class="bi bi-eye"></i> View Details
+                                            </a>
+                                            <form action="/cart/add" method="POST">
+                                                <input type="hidden" name="id" value="<%= product.id %>">
+                                                <input type="hidden" name="type" value="product">
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</section>

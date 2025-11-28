@@ -1,18 +1,75 @@
 import express from "express";
 import cors from "cors";
-import { PORT } from "./config.js";
+import session from "express-session";
+import path from "path";
+import { fileURLToPath } from "url";
+import engine from "ejs-mate";
+import { PORT, SESSION_SECRET } from "./config.js";
+
+// Import routes
+import homeRoutes from "./src/routes/home.routes.js";
+import authRoutes from "./src/routes/auth.routes.js";
+import productRoutes from "./src/routes/product.routes.js";
+import courseRoutes from "./src/routes/course.routes.js";
+import cartRoutes from "./src/routes/cart.routes.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// Middleware
 app.use(cors({
     origin: "*",
-    methods: ["GET","POST","OPTIONS"]
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Session configuration
+app.use(session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false, // Set to true in production with HTTPS
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
 }));
 
-app.get("/", (req, res) => {
-    res.send("<h1>Hello World</h1>");
+// View engine setup
+app.engine("ejs", engine);
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "src/views"));
+
+// Static files
+app.use(express.static(path.join(__dirname, "public")));
+
+// Global variables for views
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    res.locals.cart = req.session.cart || [];
+    next();
+});
+
+// Routes
+app.use("/", homeRoutes);
+app.use("/auth", authRoutes);
+app.use("/products", productRoutes);
+app.use("/courses", courseRoutes);
+app.use("/cart", cartRoutes);
+
+// 404 handler
+app.use((req, res) => {
+    res.status(404).render("errors/404", { title: "Page Not Found" });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).render("errors/500", { title: "Server Error" });
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });

@@ -1,0 +1,167 @@
+<%- layout('layouts/main') %>
+
+<section class="py-5">
+    <div class="container">
+        <h2 class="mb-4"><i class="bi bi-cart3"></i> Shopping Cart</h2>
+        
+        <% if (cart.length === 0) { %>
+            <div class="card shadow-sm">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
+                    <h4>Your cart is empty</h4>
+                    <p class="text-muted mb-4">Looks like you haven't added anything to your cart yet.</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="/products" class="btn btn-primary">
+                            <i class="bi bi-box-seam"></i> Browse Products
+                        </a>
+                        <a href="/courses" class="btn btn-outline-primary">
+                            <i class="bi bi-mortarboard"></i> Browse Courses
+                        </a>
+                    </div>
+                </div>
+            </div>
+        <% } else { %>
+            <div class="row">
+                <!-- Cart Items -->
+                <div class="col-lg-8 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Cart Items (<%= cart.length %>)</h5>
+                            <form action="/cart/clear" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i> Clear Cart
+                                </button>
+                            </form>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                            <th class="text-end">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% cart.forEach(item => { %>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="bg-light rounded d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                                                            <i class="bi bi-<%= item.type === 'product' ? 'box' : 'play-circle' %> text-secondary"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="mb-0"><%= item.name %></h6>
+                                                            <small class="text-muted text-capitalize"><%= item.type %></small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="align-middle">$<%= item.price.toFixed(2) %></td>
+                                                <td class="align-middle">
+                                                    <% if (item.type === 'product') { %>
+                                                        <div class="input-group input-group-sm" style="width: 100px;">
+                                                            <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(<%= item.id %>, '<%= item.type %>', <%= item.quantity - 1 %>)">-</button>
+                                                            <input type="text" class="form-control text-center" value="<%= item.quantity %>" readonly>
+                                                            <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(<%= item.id %>, '<%= item.type %>', <%= item.quantity + 1 %>)">+</button>
+                                                        </div>
+                                                    <% } else { %>
+                                                        <span>1</span>
+                                                    <% } %>
+                                                </td>
+                                                <td class="align-middle fw-bold">$<%= (item.price * item.quantity).toFixed(2) %></td>
+                                                <td class="align-middle text-end">
+                                                    <form action="/cart/remove" method="POST" style="display: inline;">
+                                                        <input type="hidden" name="id" value="<%= item.id %>">
+                                                        <input type="hidden" name="type" value="<%= item.type %>">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Summary -->
+                <div class="col-lg-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Order Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal</span>
+                                <span>$<%= subtotal %></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Tax (16%)</span>
+                                <span>$<%= tax %></span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Shipping</span>
+                                <span class="text-success">Free</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between mb-4">
+                                <strong>Total</strong>
+                                <strong class="text-primary">$<%= total %></strong>
+                            </div>
+                            
+                            <a href="/cart/checkout" class="btn btn-primary w-100 mb-3">
+                                <i class="bi bi-credit-card"></i> Proceed to Checkout
+                            </a>
+                            
+                            <div class="d-flex gap-2">
+                                <a href="/products" class="btn btn-outline-secondary flex-fill">
+                                    <i class="bi bi-arrow-left"></i> Products
+                                </a>
+                                <a href="/courses" class="btn btn-outline-secondary flex-fill">
+                                    Courses <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Promo Code -->
+                    <div class="card shadow-sm mt-3">
+                        <div class="card-body">
+                            <h6 class="mb-3"><i class="bi bi-ticket-perforated"></i> Have a promo code?</h6>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Enter code">
+                                <button class="btn btn-outline-primary" type="button">Apply</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</section>
+
+<script>
+function updateQuantity(id, type, quantity) {
+    fetch('/cart/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ id, type, quantity })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
