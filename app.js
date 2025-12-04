@@ -8,11 +8,6 @@ import { PORT, SESSION_SECRET } from "./config.js";
 
 // Import routes
 import routes from "./src/routes/index.js";
-// import homeRoutes from "./src/routes/home.routes.js";
-// import authRoutes from "./src/routes/auth.routes.js";
-// import productRoutes from "./src/routes/product.routes.js";
-// import courseRoutes from "./src/routes/course.routes.js";
-// import cartRoutes from "./src/routes/cart.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

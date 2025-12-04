@@ -8,7 +8,6 @@ const router = Router();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PATH_ROUTES = __dirname;
 
 function removeExtension(fileName) {
     const cleanFileName = fileName.split(".").shift();
@@ -28,6 +27,6 @@ function loadRouter(file) {
     }
 }
 
-readdirSync(PATH_ROUTES).filter((file) => loadRouter(file));
+readdirSync(__dirname).filter((file) => loadRouter(file));
 
 export default router;
