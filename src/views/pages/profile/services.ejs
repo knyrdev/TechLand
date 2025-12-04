@@ -1,0 +1,176 @@
+<%- layout('layouts/main') %>
+
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <%- include('../../partials/profile-sidebar', { active: 'servicios' }) %>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="profile-header mb-4">
+                    <h1 class="page-title">
+                        <i class="bi bi-tools text-accent"></i> Mis Servicios
+                    </h1>
+                </div>
+                
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-circle"></i> <%= error %>
+                    </div>
+                <% } %>
+                
+                <% if (typeof reservations === 'undefined' || reservations.length === 0) { %>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="bi bi-tools"></i>
+                        </div>
+                        <h3 class="empty-state-title">No tienes servicios reservados</h3>
+                        <p class="empty-state-text">Reserva un servicio de reparación para tu dispositivo</p>
+                        <a href="/servicios" class="btn btn-primary">Ver servicios</a>
+                    </div>
+                <% } else { %>
+                    <div class="services-list">
+                        <% reservations.forEach(reservation => { %>
+                            <div class="card service-reservation-card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <h5 class="service-name mb-1">
+                                                <%= reservation.servicio_nombre %>
+                                            </h5>
+                                            <p class="device-info text-muted mb-0">
+                                                <i class="bi bi-phone"></i> <%= reservation.dispositivo %>
+                                            </p>
+                                        </div>
+                                        <span class="badge badge-status <%= reservation.estado %>">
+                                            <%= reservation.estado %>
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="reservation-details">
+                                        <div class="detail-item">
+                                            <i class="bi bi-calendar3"></i>
+                                            <span>
+                                                <%= new Date(reservation.fecha_cita).toLocaleDateString('es-ES', {
+                                                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                                                }) %>
+                                            </span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="bi bi-clock"></i>
+                                            <span><%= reservation.hora_cita %></span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="bi bi-hourglass-split"></i>
+                                            <span>~<%= reservation.tiempo_estimado_horas %>h estimadas</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <% if (reservation.descripcion_problema) { %>
+                                        <div class="problem-description mt-3">
+                                            <strong>Problema:</strong>
+                                            <p class="mb-0"><%= reservation.descripcion_problema %></p>
+                                        </div>
+                                    <% } %>
+                                    
+                                    <% if (reservation.notas_tecnico) { %>
+                                        <div class="tech-notes mt-3">
+                                            <strong><i class="bi bi-chat-left-text"></i> Notas del técnico:</strong>
+                                            <p class="mb-0"><%= reservation.notas_tecnico %></p>
+                                        </div>
+                                    <% } %>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                                        <span class="reservation-price">
+                                            Costo: <strong>$<%= reservation.costo_final?.toFixed(2) || 'Por confirmar' %></strong>
+                                        </span>
+                                        <% if (reservation.estado === 'pendiente') { %>
+                                            <button class="btn btn-outline btn-sm" onclick="cancelReservation('<%= reservation.id_reserva %>')">
+                                                <i class="bi bi-x-circle"></i> Cancelar
+                                            </button>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.service-reservation-card {
+    transition: all var(--transition-fast);
+}
+
+.service-reservation-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.badge-status {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.badge-status.pendiente { background: var(--warning); color: var(--bg-primary); }
+.badge-status.confirmado { background: var(--info); color: white; }
+.badge-status.en_proceso { background: var(--accent); color: var(--bg-primary); }
+.badge-status.completado { background: var(--success); color: white; }
+.badge-status.cancelado { background: var(--error); color: white; }
+
+.reservation-details {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    padding: var(--space-3);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-secondary);
+}
+
+.detail-item i {
+    color: var(--accent);
+}
+
+.problem-description, .tech-notes {
+    padding: var(--space-3);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+}
+
+.tech-notes {
+    border-left: 3px solid var(--accent);
+}
+</style>
+
+<script>
+function cancelReservation(id) {
+    if (confirm('¿Estás seguro de que deseas cancelar esta reservación?')) {
+        fetch('/servicios/reserva/' + id + '/cancelar', {
+            method: 'POST'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Reservación cancelada', 'success');
+                location.reload();
+            } else {
+                showToast(data.message || 'Error al cancelar', 'error');
+            }
+        });
+    }
+}
+</script>

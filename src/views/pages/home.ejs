@@ -1,52 +1,79 @@
 <%- layout('layouts/main') %>
 
 <!-- Hero Section -->
-<section class="hero-section bg-primary text-white py-5">
+<section class="hero-section">
     <div class="container">
-        <div class="row align-items-center min-vh-50">
+        <div class="row align-items-center" style="min-height: 70vh;">
             <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-4">Welcome to TechLand</h1>
-                <p class="lead mb-4">Your one-stop destination for cutting-edge tech products and expert-led courses. Elevate your skills and gear up with the best.</p>
-                <div class="d-flex gap-3">
-                    <a href="/products" class="btn btn-light btn-lg">Shop Products</a>
-                    <a href="/courses" class="btn btn-outline-light btn-lg">Browse Courses</a>
+                <h1 class="hero-title animate-fade-in">
+                    Tecnología que transforma tu mundo
+                </h1>
+                <p class="hero-subtitle animate-fade-in" style="animation-delay: 0.1s;">
+                    Dispositivos premium, servicios de reparación expertos y cursos especializados. Todo lo que necesitas para dominar la tecnología móvil.
+                </p>
+                <div class="d-flex flex-wrap gap-3 animate-fade-in" style="animation-delay: 0.2s;">
+                    <a href="/productos" class="btn btn-primary btn-lg">
+                        <i class="bi bi-box-seam"></i> Ver Productos
+                    </a>
+                    <a href="/cursos" class="btn btn-outline btn-lg">
+                        <i class="bi bi-play-circle"></i> Explorar Cursos
+                    </a>
                 </div>
             </div>
-            <div class="col-lg-6 text-center">
-                <i class="bi bi-cpu display-1" style="font-size: 15rem; opacity: 0.3;"></i>
+            <div class="col-lg-6 d-none d-lg-block text-center">
+                <div style="font-size: 15rem; opacity: 0.15; color: var(--color-accent-primary);">
+                    <i class="bi bi-phone"></i>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Features Section -->
-<section class="py-5 bg-light">
+<section class="section">
     <div class="container">
         <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <i class="bi bi-truck display-4 text-primary mb-3"></i>
-                        <h5>Free Shipping</h5>
-                        <p class="text-muted mb-0">Free shipping on all orders over $100</p>
+            <div class="col-md-6 col-lg-3">
+                <div class="card feature-card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="bi bi-truck"></i>
+                        </div>
+                        <h5 class="feature-title">Envío Gratis</h5>
+                        <p class="feature-text">En compras mayores a $100</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <i class="bi bi-shield-check display-4 text-primary mb-3"></i>
-                        <h5>Secure Payment</h5>
-                        <p class="text-muted mb-0">100% secure payment processing</p>
+            <div class="col-md-6 col-lg-3">
+                <div class="card feature-card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h5 class="feature-title">Garantía</h5>
+                        <p class="feature-text">12 meses en todos los productos</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <i class="bi bi-headset display-4 text-primary mb-3"></i>
-                        <h5>24/7 Support</h5>
-                        <p class="text-muted mb-0">Round-the-clock customer support</p>
+            <div class="col-md-6 col-lg-3">
+                <div class="card feature-card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="bi bi-tools"></i>
+                        </div>
+                        <h5 class="feature-title">Reparación Express</h5>
+                        <p class="feature-text">Mayoría de reparaciones en el día</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card feature-card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="bi bi-headset"></i>
+                        </div>
+                        <h5 class="feature-title">Soporte 24/7</h5>
+                        <p class="feature-text">Atención personalizada siempre</p>
                     </div>
                 </div>
             </div>
@@ -54,159 +81,254 @@
     </div>
 </section>
 
-<!-- Featured Products Section -->
-<section class="py-5">
+<!-- Featured Products -->
+<section class="section section-dark">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">Featured Products</h2>
-            <a href="/products" class="btn btn-outline-primary">View All <i class="bi bi-arrow-right"></i></a>
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="section-title mb-2">Productos Destacados</h2>
+                <p class="text-secondary mb-0">Los dispositivos más populares</p>
+            </div>
+            <a href="/productos" class="btn btn-outline">
+                Ver todos <i class="bi bi-arrow-right"></i>
+            </a>
         </div>
+        
         <div class="row g-4">
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="bi bi-laptop display-1 text-white"></i>
+            <% if (typeof featuredProducts !== 'undefined' && featuredProducts.length > 0) { %>
+                <% featuredProducts.slice(0, 4).forEach((product, index) => { %>
+                    <div class="col-md-6 col-lg-3 animate-fade-in" style="animation-delay: <%= index * 0.1 %>s;">
+                        <div class="card product-card h-100">
+                            <div class="card-img-wrapper">
+                                <i class="bi bi-<%= product.categoria_slug === 'smartphones' ? 'phone' : 'laptop' %>"></i>
+                                <% if (product.precio_oferta) { %>
+                                    <span class="card-badge badge-sale">Oferta</span>
+                                <% } else if (product.destacado) { %>
+                                    <span class="card-badge">Destacado</span>
+                                <% } %>
+                            </div>
+                            <div class="card-body">
+                                <span class="category-badge"><%= product.categoria_nombre %></span>
+                                <h5 class="card-title"><%= product.nombre %></h5>
+                                <p class="card-text"><%= product.descripcion_corta || product.descripcion?.substring(0, 80) + '...' %></p>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <div>
+                                        <span class="card-price">$<%= (product.precio_oferta || product.precio).toFixed(2) %></span>
+                                        <% if (product.precio_oferta) { %>
+                                            <span class="card-price-original">$<%= product.precio.toFixed(2) %></span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-grid gap-2">
+                                    <a href="/productos/<%= product.slug %>" class="btn btn-outline btn-sm">Ver detalles</a>
+                                    <form action="/cart/add" method="POST" class="add-to-cart-form">
+                                        <input type="hidden" name="id" value="<%= product.id_producto %>">
+                                        <input type="hidden" name="type" value="producto">
+                                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                                            <i class="bi bi-cart-plus"></i> Agregar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <h6 class="card-title">Laptop Gaming Pro</h6>
-                        <p class="text-muted small">High-performance gaming laptop</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-primary">$1,599.99</span>
-                            <a href="/products/1" class="btn btn-sm btn-outline-primary">View</a>
+                <% }); %>
+            <% } else { %>
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">Cargando productos...</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Servicios de Reparación</h2>
+            <p class="section-subtitle">Técnicos certificados a tu servicio</p>
+        </div>
+        
+        <div class="row g-4">
+            <% if (typeof services !== 'undefined' && services.length > 0) { %>
+                <% services.slice(0, 6).forEach((service, index) => { %>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card service-card h-100">
+                            <div class="card-body">
+                                <div class="feature-icon mb-3">
+                                    <i class="bi bi-<%= service.icono || 'tools' %>"></i>
+                                </div>
+                                <h5 class="card-title"><%= service.nombre %></h5>
+                                <p class="card-text"><%= service.descripcion_corta || service.descripcion?.substring(0, 100) + '...' %></p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <span class="card-price">Desde $<%= service.precio_base?.toFixed(2) %></span>
+                                    <% if (service.duracion_estimada) { %>
+                                        <span class="text-muted small">
+                                            <i class="bi bi-clock"></i> ~<%= service.duracion_estimada %> min
+                                        </span>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="/servicios/<%= service.slug %>" class="btn btn-outline w-100">
+                                    Más información
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <!-- Default services if none from DB -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card service-card h-100">
+                        <div class="card-body">
+                            <div class="feature-icon mb-3"><i class="bi bi-phone"></i></div>
+                            <h5 class="card-title">Cambio de Pantalla</h5>
+                            <p class="card-text">Reemplazo de pantallas dañadas con piezas de alta calidad.</p>
+                            <span class="card-price">Desde $89.99</span>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="bi bi-keyboard display-1 text-white"></i>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-title">Mechanical Keyboard RGB</h6>
-                        <p class="text-muted small">Premium mechanical keyboard</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-primary">$149.99</span>
-                            <a href="/products/2" class="btn btn-sm btn-outline-primary">View</a>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card service-card h-100">
+                        <div class="card-body">
+                            <div class="feature-icon mb-3"><i class="bi bi-battery-charging"></i></div>
+                            <h5 class="card-title">Cambio de Batería</h5>
+                            <p class="card-text">Baterías nuevas para mejorar la autonomía de tu dispositivo.</p>
+                            <span class="card-price">Desde $49.99</span>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="bi bi-mouse display-1 text-white"></i>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-title">Gaming Mouse Pro</h6>
-                        <p class="text-muted small">Wireless gaming mouse</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-primary">$89.99</span>
-                            <a href="/products/3" class="btn btn-sm btn-outline-primary">View</a>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card service-card h-100">
+                        <div class="card-body">
+                            <div class="feature-icon mb-3"><i class="bi bi-hdd"></i></div>
+                            <h5 class="card-title">Recuperación de Datos</h5>
+                            <p class="card-text">Rescate de información de dispositivos dañados.</p>
+                            <span class="card-price">Desde $79.99</span>
                         </div>
                     </div>
                 </div>
+            <% } %>
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="/servicios" class="btn btn-primary">
+                Ver todos los servicios <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <span class="stat-number"><%= stats?.total_productos || '50' %>+</span>
+                    <span class="stat-label">Productos</span>
+                </div>
             </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="bi bi-display display-1 text-white"></i>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-title">4K Monitor 27"</h6>
-                        <p class="text-muted small">Professional 4K IPS monitor</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-primary">$499.99</span>
-                            <a href="/products/4" class="btn btn-sm btn-outline-primary">View</a>
-                        </div>
-                    </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <span class="stat-number"><%= stats?.total_cursos || '10' %>+</span>
+                    <span class="stat-label">Cursos</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <span class="stat-number"><%= stats?.total_estudiantes || '1000' %>+</span>
+                    <span class="stat-label">Estudiantes</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <span class="stat-number">5K+</span>
+                    <span class="stat-label">Reparaciones</span>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Featured Courses Section -->
-<section class="py-5 bg-light">
+<!-- Featured Courses -->
+<section class="section section-dark">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">Popular Courses</h2>
-            <a href="/courses" class="btn btn-outline-primary">View All <i class="bi bi-arrow-right"></i></a>
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="section-title mb-2">Cursos de Reparación</h2>
+                <p class="text-secondary mb-0">Aprende de expertos en la industria</p>
+            </div>
+            <a href="/cursos" class="btn btn-outline">
+                Ver todos <i class="bi bi-arrow-right"></i>
+            </a>
         </div>
+        
         <div class="row g-4">
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-img-top bg-warning d-flex align-items-center justify-content-center" style="height: 150px;">
-                        <i class="bi bi-filetype-js display-1 text-dark"></i>
-                    </div>
-                    <div class="card-body">
-                        <span class="badge bg-success mb-2">Beginner</span>
-                        <h6 class="card-title">JavaScript Full Course</h6>
-                        <p class="text-muted small mb-2"><i class="bi bi-person"></i> John Doe</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-primary">$49.99</span>
-                            <a href="/courses/1" class="btn btn-sm btn-outline-primary">View</a>
+            <% if (typeof featuredCourses !== 'undefined' && featuredCourses.length > 0) { %>
+                <% featuredCourses.forEach((course, index) => { %>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card course-card h-100">
+                            <div class="card-img-wrapper">
+                                <i class="bi bi-mortarboard"></i>
+                                <% if (course.destacado) { %>
+                                    <span class="card-badge">Popular</span>
+                                <% } %>
+                            </div>
+                            <div class="card-body">
+                                <span class="level-badge <%= course.nivel %>"><%= course.nivel %></span>
+                                <h5 class="card-title mt-2"><%= course.titulo %></h5>
+                                <p class="card-text small text-muted mb-2">
+                                    <i class="bi bi-person"></i> <%= course.instructor %>
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center text-muted small mb-3">
+                                    <span><i class="bi bi-clock"></i> <%= course.duracion_horas %>h</span>
+                                    <span><i class="bi bi-people"></i> <%= course.total_estudiantes %> alumnos</span>
+                                </div>
+                                <div>
+                                    <span class="card-price">$<%= (course.precio_oferta || course.precio).toFixed(2) %></span>
+                                    <% if (course.precio_oferta) { %>
+                                        <span class="card-price-original">$<%= course.precio.toFixed(2) %></span>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="/cursos/<%= course.slug %>" class="btn btn-outline w-100">Ver curso</a>
+                            </div>
                         </div>
                     </div>
+                <% }); %>
+            <% } else { %>
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">Cargando cursos...</p>
                 </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-img-top bg-info d-flex align-items-center justify-content-center" style="height: 150px;">
-                        <i class="bi bi-filetype-jsx display-1 text-white"></i>
-                    </div>
-                    <div class="card-body">
-                        <span class="badge bg-warning text-dark mb-2">Intermediate</span>
-                        <h6 class="card-title">React & Node.js Masterclass</h6>
-                        <p class="text-muted small mb-2"><i class="bi bi-person"></i> Jane Smith</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-primary">$79.99</span>
-                            <a href="/courses/2" class="btn btn-sm btn-outline-primary">View</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-img-top bg-primary d-flex align-items-center justify-content-center" style="height: 150px;">
-                        <i class="bi bi-filetype-py display-1 text-white"></i>
-                    </div>
-                    <div class="card-body">
-                        <span class="badge bg-warning text-dark mb-2">Intermediate</span>
-                        <h6 class="card-title">Python for Data Science</h6>
-                        <p class="text-muted small mb-2"><i class="bi bi-person"></i> Mike Johnson</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-primary">$59.99</span>
-                            <a href="/courses/3" class="btn btn-sm btn-outline-primary">View</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-img-top bg-danger d-flex align-items-center justify-content-center" style="height: 150px;">
-                        <i class="bi bi-palette display-1 text-white"></i>
-                    </div>
-                    <div class="card-body">
-                        <span class="badge bg-success mb-2">Beginner</span>
-                        <h6 class="card-title">UI/UX Design Fundamentals</h6>
-                        <p class="text-muted small mb-2"><i class="bi bi-person"></i> Sarah Wilson</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-primary">$39.99</span>
-                            <a href="/courses/4" class="btn btn-sm btn-outline-primary">View</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <% } %>
         </div>
     </div>
 </section>
 
 <!-- CTA Section -->
-<section class="py-5 bg-primary text-white">
-    <div class="container text-center">
-        <h2 class="mb-3">Ready to Level Up Your Tech Skills?</h2>
-        <p class="lead mb-4">Join thousands of students and professionals who trust TechLand for their tech needs.</p>
-        <a href="/auth/register" class="btn btn-light btn-lg">Get Started Today</a>
+<section class="section">
+    <div class="container">
+        <div class="card" style="background: var(--color-accent-gradient); border: none;">
+            <div class="card-body text-center py-5">
+                <h2 class="text-white mb-3">¿Listo para comenzar?</h2>
+                <p class="text-white opacity-75 mb-4 mx-auto" style="max-width: 500px;">
+                    Únete a miles de estudiantes y clientes satisfechos. Aprende, repara y mejora tu experiencia tecnológica.
+                </p>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a href="/auth/register" class="btn btn-lg" style="background: white; color: var(--color-accent-primary);">
+                        Crear cuenta gratis
+                    </a>
+                    <a href="/contacto" class="btn btn-outline btn-lg" style="border-color: white; color: white;">
+                        Contactar
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </section>

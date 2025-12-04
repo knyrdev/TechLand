@@ -1,114 +1,319 @@
 <%- layout('layouts/main') %>
 
-<section class="py-5">
+<section class="section">
     <div class="container">
         <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item"><a href="/products">Products</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><%= product.name %></li>
-            </ol>
+        <nav class="breadcrumb mb-4">
+            <a href="/">Inicio</a>
+            <span>/</span>
+            <a href="/productos">Productos</a>
+            <span>/</span>
+            <span><%= product.nombre %></span>
         </nav>
         
         <div class="row">
-            <!-- Product Image -->
-            <div class="col-lg-6 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-body bg-light d-flex align-items-center justify-content-center" style="height: 400px;">
-                        <i class="bi bi-box display-1 text-secondary" style="font-size: 10rem;"></i>
+            <!-- Product Images -->
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="product-gallery">
+                    <div class="main-image-container">
+                        <div class="product-main-image">
+                            <% if (product.imagen_url) { %>
+                                <img src="<%= product.imagen_url %>" 
+                                     alt="<%= product.nombre %>" 
+                                     id="mainImage" 
+                                     class="img-fluid">
+                            <% } else { %>
+                                <div class="placeholder-image">
+                                    <i class="bi bi-<%= product.categoria === 'telefono' ? 'phone' : 'laptop' %>"></i>
+                                </div>
+                            <% } %>
+                        </div>
+                        <% if (product.precio_oferta) { %>
+                            <div class="discount-badge">
+                                -<%= Math.round((1 - product.precio_oferta / product.precio) * 100) %>%
+                            </div>
+                        <% } %>
                     </div>
+                    
+                    <% if (typeof product.imagenes !== 'undefined' && product.imagenes && product.imagenes.length > 1) { %>
+                        <div class="thumbnail-gallery">
+                            <% product.imagenes.forEach((img, idx) => { %>
+                                <div class="thumbnail <%= idx === 0 ? 'active' : '' %>" 
+                                     onclick="changeImage('<%= img.url %>', this)">
+                                    <img src="<%= img.url %>" alt="<%= product.nombre %> - <%= idx + 1 %>">
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } %>
                 </div>
             </div>
             
-            <!-- Product Details -->
+            <!-- Product Info -->
             <div class="col-lg-6">
-                <span class="badge bg-secondary mb-2"><%= product.category %></span>
-                <h1 class="mb-3"><%= product.name %></h1>
-                
-                <div class="d-flex align-items-center mb-3">
-                    <div class="text-warning me-2">
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-half"></i>
-                    </div>
-                    <span class="text-muted">(4.5) - 128 reviews</span>
-                </div>
-                
-                <h2 class="text-primary mb-4">$<%= product.price.toFixed(2) %></h2>
-                
-                <p class="lead mb-4"><%= product.description %></p>
-                
-                <div class="mb-4">
-                    <span class="<%= product.stock > 0 ? 'text-success' : 'text-danger' %>">
-                        <i class="bi bi-<%= product.stock > 0 ? 'check-circle' : 'x-circle' %>"></i>
-                        <%= product.stock > 0 ? `${product.stock} in stock` : 'Out of stock' %>
-                    </span>
-                </div>
-                
-                <form action="/cart/add" method="POST" class="mb-4">
-                    <input type="hidden" name="id" value="<%= product.id %>">
-                    <input type="hidden" name="type" value="product">
-                    
-                    <div class="row g-3 align-items-center mb-3">
-                        <div class="col-auto">
-                            <label for="quantity" class="form-label mb-0">Quantity:</label>
-                        </div>
-                        <div class="col-auto">
-                            <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" max="<%= product.stock %>" style="width: 80px;">
-                        </div>
+                <div class="product-info">
+                    <div class="product-badges mb-3">
+                        <span class="badge badge-category">
+                            <%= product.categoria === 'telefono' ? 'Teléfono' : 'Laptop' %>
+                        </span>
+                        <span class="badge badge-brand"><%= product.marca %></span>
+                        <% if (product.stock > 0) { %>
+                            <span class="badge badge-stock in-stock">
+                                <i class="bi bi-check-circle"></i> En stock
+                            </span>
+                        <% } else { %>
+                            <span class="badge badge-stock out-of-stock">
+                                <i class="bi bi-x-circle"></i> Agotado
+                            </span>
+                        <% } %>
                     </div>
                     
-                    <div class="d-grid gap-2 d-md-flex">
-                        <button type="submit" class="btn btn-primary btn-lg" <%= product.stock === 0 ? 'disabled' : '' %>>
-                            <i class="bi bi-cart-plus"></i> Add to Cart
-                        </button>
-                        <button type="button" class="btn btn-outline-danger btn-lg">
-                            <i class="bi bi-heart"></i> Wishlist
-                        </button>
+                    <h1 class="product-title"><%= product.nombre %></h1>
+                    
+                    <% if (product.calificacion_promedio > 0) { %>
+                        <div class="product-rating mb-3">
+                            <div class="stars">
+                                <% for (let i = 1; i <= 5; i++) { %>
+                                    <i class="bi bi-star<%= i <= Math.round(product.calificacion_promedio) ? '-fill' : '' %>"></i>
+                                <% } %>
+                            </div>
+                            <span class="rating-text">
+                                <%= product.calificacion_promedio?.toFixed(1) %> 
+                                (<%= product.total_resenas || 0 %> reseñas)
+                            </span>
+                        </div>
+                    <% } %>
+                    
+                    <div class="product-price-container mb-4">
+                        <% if (product.precio_oferta) { %>
+                            <span class="current-price">$<%= product.precio_oferta.toFixed(2) %></span>
+                            <span class="original-price">$<%= product.precio.toFixed(2) %></span>
+                            <span class="discount-text">
+                                Ahorras $<%= (product.precio - product.precio_oferta).toFixed(2) %>
+                            </span>
+                        <% } else { %>
+                            <span class="current-price">$<%= product.precio.toFixed(2) %></span>
+                        <% } %>
                     </div>
-                </form>
-                
-                <!-- Product Features -->
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-title"><i class="bi bi-info-circle"></i> Product Features</h6>
-                        <ul class="mb-0">
-                            <li>High-quality materials</li>
-                            <li>1 year warranty</li>
-                            <li>Free shipping on orders over $100</li>
-                            <li>30-day return policy</li>
-                        </ul>
+                    
+                    <div class="product-description mb-4">
+                        <p><%= product.descripcion %></p>
+                    </div>
+                    
+                    <!-- Specifications -->
+                    <div class="specifications mb-4">
+                        <h5 class="spec-title"><i class="bi bi-list-check"></i> Especificaciones</h5>
+                        <div class="spec-grid">
+                            <% if (product.categoria === 'telefono') { %>
+                                <% if (product.pantalla) { %>
+                                    <div class="spec-item">
+                                        <span class="spec-label"><i class="bi bi-display"></i> Pantalla</span>
+                                        <span class="spec-value"><%= product.pantalla %></span>
+                                    </div>
+                                <% } %>
+                                <% if (product.procesador) { %>
+                                    <div class="spec-item">
+                                        <span class="spec-label"><i class="bi bi-cpu"></i> Procesador</span>
+                                        <span class="spec-value"><%= product.procesador %></span>
+                                    </div>
+                                <% } %>
+                                <% if (product.ram) { %>
+                                    <div class="spec-item">
+                                        <span class="spec-label"><i class="bi bi-memory"></i> RAM</span>
+                                        <span class="spec-value"><%= product.ram %></span>
+                                    </div>
+                                <% } %>
+                                <% if (product.almacenamiento) { %>
+                                    <div class="spec-item">
+                                        <span class="spec-label"><i class="bi bi-hdd"></i> Almacenamiento</span>
+                                        <span class="spec-value"><%= product.almacenamiento %></span>
+                                    </div>
+                                <% } %>
+                                <% if (product.camara) { %>
+                                    <div class="spec-item">
+                                        <span class="spec-label"><i class="bi bi-camera"></i> Cámara</span>
+                                        <span class="spec-value"><%= product.camara %></span>
+                                    </div>
+                                <% } %>
+                                <% if (product.bateria) { %>
+                                    <div class="spec-item">
+                                        <span class="spec-label"><i class="bi bi-battery-full"></i> Batería</span>
+                                        <span class="spec-value"><%= product.bateria %></span>
+                                    </div>
+                                <% } %>
+                            <% } else { %>
+                                <% if (product.pantalla) { %>
+                                    <div class="spec-item">
+                                        <span class="spec-label"><i class="bi bi-display"></i> Pantalla</span>
+                                        <span class="spec-value"><%= product.pantalla %></span>
+                                    </div>
+                                <% } %>
+                                <% if (product.procesador) { %>
+                                    <div class="spec-item">
+                                        <span class="spec-label"><i class="bi bi-cpu"></i> Procesador</span>
+                                        <span class="spec-value"><%= product.procesador %></span>
+                                    </div>
+                                <% } %>
+                                <% if (product.ram) { %>
+                                    <div class="spec-item">
+                                        <span class="spec-label"><i class="bi bi-memory"></i> RAM</span>
+                                        <span class="spec-value"><%= product.ram %></span>
+                                    </div>
+                                <% } %>
+                                <% if (product.almacenamiento) { %>
+                                    <div class="spec-item">
+                                        <span class="spec-label"><i class="bi bi-hdd"></i> SSD</span>
+                                        <span class="spec-value"><%= product.almacenamiento %></span>
+                                    </div>
+                                <% } %>
+                                <% if (product.grafica) { %>
+                                    <div class="spec-item">
+                                        <span class="spec-label"><i class="bi bi-gpu-card"></i> Gráfica</span>
+                                        <span class="spec-value"><%= product.grafica %></span>
+                                    </div>
+                                <% } %>
+                            <% } %>
+                        </div>
+                    </div>
+                    
+                    <!-- Add to Cart -->
+                    <% if (product.stock > 0) { %>
+                        <form action="/cart/add" method="POST" class="add-to-cart-form">
+                            <input type="hidden" name="id" value="<%= product.id_producto %>">
+                            <input type="hidden" name="type" value="producto">
+                            
+                            <div class="quantity-selector mb-4">
+                                <label class="form-label">Cantidad:</label>
+                                <div class="quantity-input">
+                                    <button type="button" class="qty-btn" onclick="decrementQty()">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <input type="number" 
+                                           name="quantity" 
+                                           id="quantity" 
+                                           value="1" 
+                                           min="1" 
+                                           max="<%= product.stock %>" 
+                                           class="qty-input">
+                                    <button type="button" class="qty-btn" onclick="incrementQty()">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                                <span class="stock-info"><%= product.stock %> disponibles</span>
+                            </div>
+                            
+                            <div class="d-flex gap-3">
+                                <button type="submit" class="btn btn-primary btn-lg flex-grow-1">
+                                    <i class="bi bi-cart-plus"></i> Agregar al carrito
+                                </button>
+                                <button type="button" class="btn btn-outline btn-lg" onclick="buyNow()">
+                                    <i class="bi bi-lightning"></i> Comprar ahora
+                                </button>
+                            </div>
+                        </form>
+                    <% } else { %>
+                        <div class="out-of-stock-notice">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <p>Este producto está agotado</p>
+                            <button class="btn btn-outline" onclick="notifyStock('<%= product.id_producto %>')">
+                                <i class="bi bi-bell"></i> Notificarme cuando esté disponible
+                            </button>
+                        </div>
+                    <% } %>
+                    
+                    <!-- Features -->
+                    <div class="product-features mt-4">
+                        <div class="feature-item">
+                            <i class="bi bi-truck"></i>
+                            <span>Envío gratis</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="bi bi-shield-check"></i>
+                            <span>Garantía incluida</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="bi bi-arrow-return-left"></i>
+                            <span>30 días para devolución</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Related Products -->
-        <% if (relatedProducts.length > 0) { %>
-            <section class="mt-5">
-                <h3 class="mb-4">Related Products</h3>
-                <div class="row g-4">
-                    <% relatedProducts.forEach(related => { %>
-                        <div class="col-md-6 col-lg-3">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
-                                    <i class="bi bi-box display-4 text-secondary"></i>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="card-title"><%= related.name %></h6>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="fw-bold text-primary">$<%= related.price.toFixed(2) %></span>
-                                        <a href="/products/<%= related.id %>" class="btn btn-sm btn-outline-primary">View</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <% }); %>
-                </div>
-            </section>
-        <% } %>
     </div>
 </section>
+
+<!-- Related Products -->
+<% if (typeof relatedProducts !== 'undefined' && relatedProducts && relatedProducts.length > 0) { %>
+<section class="section section-dark">
+    <div class="container">
+        <h2 class="section-title">Productos Relacionados</h2>
+        <div class="row g-4">
+            <% relatedProducts.slice(0, 4).forEach(related => { %>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card product-card h-100">
+                        <div class="card-img-wrapper">
+                            <i class="bi bi-<%= related.categoria === 'telefono' ? 'phone' : 'laptop' %>"></i>
+                        </div>
+                        <div class="card-body">
+                            <span class="product-brand"><%= related.marca %></span>
+                            <h5 class="card-title"><%= related.nombre %></h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="card-price">$<%= (related.precio_oferta || related.precio).toFixed(2) %></span>
+                                <a href="/productos/<%= related.slug %>" class="btn btn-outline btn-sm">
+                                    Ver más
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<script>
+function changeImage(url, element) {
+    document.getElementById('mainImage').src = url;
+    document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+    element.classList.add('active');
+}
+
+function incrementQty() {
+    const input = document.getElementById('quantity');
+    const max = parseInt(input.max);
+    const current = parseInt(input.value);
+    if (current < max) {
+        input.value = current + 1;
+    }
+}
+
+function decrementQty() {
+    const input = document.getElementById('quantity');
+    const current = parseInt(input.value);
+    if (current > 1) {
+        input.value = current - 1;
+    }
+}
+
+function buyNow() {
+    const form = document.querySelector('.add-to-cart-form');
+    const formData = new FormData(form);
+    formData.append('buyNow', 'true');
+    
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(formData))
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '/cart/checkout';
+        }
+    });
+}
+
+function notifyStock(productId) {
+    showToast('Te notificaremos cuando el producto esté disponible', 'success');
+}
+</script>

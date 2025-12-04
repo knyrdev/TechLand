@@ -1,0 +1,345 @@
+<%- layout('layouts/main') %>
+
+<section class="section">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb mb-4">
+            <a href="/">Inicio</a>
+            <span>/</span>
+            <a href="/servicios">Servicios</a>
+            <span>/</span>
+            <span><%= service.nombre %></span>
+        </nav>
+        
+        <div class="row">
+            <!-- Service Info -->
+            <div class="col-lg-8">
+                <div class="service-header mb-4">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="badge badge-category">
+                            <i class="bi bi-<%= service.categoria_dispositivo === 'telefono' ? 'phone' : 'laptop' %>"></i>
+                            <%= service.categoria_dispositivo === 'telefono' ? 'Teléfono' : 'Laptop' %>
+                        </span>
+                        <% if (service.garantia_dias) { %>
+                            <span class="badge badge-warranty">
+                                <i class="bi bi-shield-check"></i> <%= service.garantia_dias %> días de garantía
+                            </span>
+                        <% } %>
+                    </div>
+                    
+                    <h1 class="service-title"><%= service.nombre %></h1>
+                    
+                    <div class="service-meta">
+                        <span class="meta-item">
+                            <i class="bi bi-clock"></i>
+                            Tiempo estimado: <%= service.tiempo_estimado_horas %> horas
+                        </span>
+                        <% if (service.calificacion_promedio > 0) { %>
+                            <span class="meta-item rating">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <%= service.calificacion_promedio?.toFixed(1) %>
+                                (<%= service.total_resenas || 0 %> reseñas)
+                            </span>
+                        <% } %>
+                    </div>
+                </div>
+                
+                <!-- Service Image -->
+                <div class="service-image mb-4">
+                    <div class="service-icon-large">
+                        <i class="bi bi-tools"></i>
+                    </div>
+                </div>
+                
+                <!-- Service Description -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4><i class="bi bi-info-circle"></i> Descripción del servicio</h4>
+                        <p class="service-description"><%= service.descripcion %></p>
+                        
+                        <h5 class="mt-4">¿Qué incluye este servicio?</h5>
+                        <ul class="service-includes-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Diagnóstico completo del dispositivo</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Reparación con piezas de calidad</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Pruebas de funcionamiento</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Garantía de <%= service.garantia_dias || 30 %> días</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Soporte post-servicio</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- How it works -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4><i class="bi bi-gear"></i> ¿Cómo funciona?</h4>
+                        <div class="process-steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h5>Reserva tu cita</h5>
+                                    <p>Selecciona fecha y hora conveniente para ti</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h5>Trae tu dispositivo</h5>
+                                    <p>Visítanos en nuestra tienda o solicita recogida</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h5>Diagnóstico</h5>
+                                    <p>Evaluamos tu dispositivo y confirmamos el servicio</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h5>Reparación</h5>
+                                    <p>Realizamos la reparación con garantía</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">5</div>
+                                <div class="step-content">
+                                    <h5>Entrega</h5>
+                                    <p>Te notificamos cuando esté listo para recoger</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reviews -->
+                <div class="card">
+                    <div class="card-body">
+                        <h4><i class="bi bi-chat-square-text"></i> Reseñas de clientes</h4>
+                        
+                        <% if (typeof reviews !== 'undefined' && reviews && reviews.length > 0) { %>
+                            <div class="reviews-list">
+                                <% reviews.forEach(review => { %>
+                                    <div class="review-item">
+                                        <div class="review-header">
+                                            <div class="reviewer-avatar">
+                                                <i class="bi bi-person-circle"></i>
+                                            </div>
+                                            <div class="reviewer-info">
+                                                <h6><%= review.usuario_nombre %></h6>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="stars small">
+                                                        <% for (let i = 1; i <= 5; i++) { %>
+                                                            <i class="bi bi-star<%= i <= review.calificacion ? '-fill' : '' %>"></i>
+                                                        <% } %>
+                                                    </div>
+                                                    <span class="text-muted small"><%= new Date(review.fecha).toLocaleDateString() %></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="review-text"><%= review.comentario %></p>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } else { %>
+                            <div class="empty-reviews">
+                                <i class="bi bi-chat-square-text"></i>
+                                <p>Aún no hay reseñas para este servicio</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Booking Sidebar -->
+            <div class="col-lg-4">
+                <div class="service-sidebar">
+                    <div class="card sticky-card">
+                        <div class="card-body">
+                            <div class="price-container mb-4">
+                                <% if (service.precio_oferta) { %>
+                                    <span class="current-price">$<%= service.precio_oferta.toFixed(2) %></span>
+                                    <span class="original-price">$<%= service.precio.toFixed(2) %></span>
+                                    <span class="discount-badge">
+                                        -<%= Math.round((1 - service.precio_oferta / service.precio) * 100) %>% OFF
+                                    </span>
+                                <% } else { %>
+                                    <span class="current-price">$<%= service.precio.toFixed(2) %></span>
+                                <% } %>
+                            </div>
+                            
+                            <div class="service-highlights mb-4">
+                                <div class="highlight-item">
+                                    <i class="bi bi-clock"></i>
+                                    <div>
+                                        <span class="highlight-label">Tiempo estimado</span>
+                                        <span class="highlight-value"><%= service.tiempo_estimado_horas %>h</span>
+                                    </div>
+                                </div>
+                                <div class="highlight-item">
+                                    <i class="bi bi-shield-check"></i>
+                                    <div>
+                                        <span class="highlight-label">Garantía</span>
+                                        <span class="highlight-value"><%= service.garantia_dias || 30 %> días</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Booking Form -->
+                            <form action="/servicios/reservar" method="POST" id="bookingForm" class="booking-form">
+                                <input type="hidden" name="id_servicio" value="<%= service.id_servicio %>">
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-calendar3"></i> Selecciona fecha
+                                    </label>
+                                    <input type="date" 
+                                           class="form-control" 
+                                           name="fecha" 
+                                           id="bookingDate"
+                                           min="<%= new Date().toISOString().split('T')[0] %>"
+                                           required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-clock"></i> Horario disponible
+                                    </label>
+                                    <select class="form-select" name="hora" id="bookingTime" required>
+                                        <option value="">Selecciona una hora</option>
+                                        <option value="09:00">9:00 AM</option>
+                                        <option value="10:00">10:00 AM</option>
+                                        <option value="11:00">11:00 AM</option>
+                                        <option value="12:00">12:00 PM</option>
+                                        <option value="14:00">2:00 PM</option>
+                                        <option value="15:00">3:00 PM</option>
+                                        <option value="16:00">4:00 PM</option>
+                                        <option value="17:00">5:00 PM</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-<%= service.categoria_dispositivo === 'telefono' ? 'phone' : 'laptop' %>"></i>
+                                        Dispositivo
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           name="dispositivo" 
+                                           placeholder="Ej: iPhone 14 Pro / MacBook Air M2"
+                                           required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-chat-left-text"></i> Descripción del problema
+                                    </label>
+                                    <textarea class="form-control" 
+                                              name="descripcion_problema" 
+                                              rows="3" 
+                                              placeholder="Describe brevemente el problema de tu dispositivo"
+                                              required></textarea>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-calendar-check"></i> Reservar cita
+                                    </button>
+                                    <button type="button" class="btn btn-outline" onclick="addServiceToCart()">
+                                        <i class="bi bi-cart-plus"></i> Agregar al carrito
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <p class="text-center text-muted small mt-3 mb-0">
+                                <i class="bi bi-info-circle"></i> El precio final puede variar según el diagnóstico
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Card -->
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h5 class="mb-3"><i class="bi bi-question-circle"></i> ¿Tienes dudas?</h5>
+                            <p class="text-muted small mb-3">Contáctanos para más información sobre este servicio</p>
+                            <div class="d-grid gap-2">
+                                <a href="https://wa.me/+58424XXXXXXX?text=Hola, tengo una consulta sobre el servicio: <%= service.nombre %>" 
+                                   class="btn btn-success btn-sm" target="_blank">
+                                    <i class="bi bi-whatsapp"></i> WhatsApp
+                                </a>
+                                <a href="/contacto" class="btn btn-outline btn-sm">
+                                    <i class="bi bi-envelope"></i> Contacto
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Services -->
+<% if (typeof relatedServices !== 'undefined' && relatedServices && relatedServices.length > 0) { %>
+<section class="section section-dark">
+    <div class="container">
+        <h2 class="section-title">Servicios Relacionados</h2>
+        <div class="row g-4">
+            <% relatedServices.slice(0, 3).forEach(related => { %>
+                <div class="col-md-4">
+                    <div class="card service-card h-100">
+                        <div class="card-img-wrapper">
+                            <i class="bi bi-tools"></i>
+                        </div>
+                        <div class="card-body">
+                            <span class="badge badge-category mb-2">
+                                <%= related.categoria_dispositivo === 'telefono' ? 'Teléfono' : 'Laptop' %>
+                            </span>
+                            <h5 class="card-title"><%= related.nombre %></h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="card-price">$<%= (related.precio_oferta || related.precio).toFixed(2) %></span>
+                                <a href="/servicios/<%= related.slug %>" class="btn btn-outline btn-sm">Ver más</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<script>
+function addServiceToCart() {
+    const form = document.getElementById('bookingForm');
+    const formData = new FormData(form);
+    
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            id: '<%= service.id_servicio %>',
+            type: 'servicio',
+            bookingDate: formData.get('fecha'),
+            bookingTime: formData.get('hora'),
+            device: formData.get('dispositivo'),
+            problem: formData.get('descripcion_problema')
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Servicio agregado al carrito', 'success');
+            updateCartCount(data.cartCount);
+        } else {
+            showToast(data.message || 'Error al agregar', 'error');
+        }
+    })
+    .catch(err => {
+        showToast('Error al agregar al carrito', 'error');
+    });
+}
+
+// Set minimum date to today
+document.getElementById('bookingDate').min = new Date().toISOString().split('T')[0];
+</script>

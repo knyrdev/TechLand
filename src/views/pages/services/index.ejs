@@ -1,0 +1,164 @@
+<%- layout('layouts/main') %>
+
+<!-- Hero Section -->
+<section class="hero-section" style="padding: var(--space-12) 0;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="hero-title">Servicios de Reparación</h1>
+                <p class="hero-subtitle mx-auto">
+                    Técnicos certificados con experiencia en reparación de smartphones y laptops. 
+                    Diagnóstico gratuito y garantía en todas las reparaciones.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <!-- Filter tabs -->
+        <div class="d-flex justify-content-center mb-5">
+            <div class="btn-group" role="group">
+                <a href="/servicios?tipo=todos" class="btn <%= !filters?.tipo || filters?.tipo === 'todos' ? 'btn-primary' : 'btn-outline' %>">
+                    <i class="bi bi-grid"></i> Todos
+                </a>
+                <a href="/servicios?tipo=smartphone" class="btn <%= filters?.tipo === 'smartphone' ? 'btn-primary' : 'btn-outline' %>">
+                    <i class="bi bi-phone"></i> Smartphones
+                </a>
+                <a href="/servicios?tipo=laptop" class="btn <%= filters?.tipo === 'laptop' ? 'btn-primary' : 'btn-outline' %>">
+                    <i class="bi bi-laptop"></i> Laptops
+                </a>
+            </div>
+        </div>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-circle"></i> <%= error %>
+            </div>
+        <% } %>
+        
+        <% if (typeof services === 'undefined' || services.length === 0) { %>
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="bi bi-tools"></i>
+                </div>
+                <h3 class="empty-state-title">No se encontraron servicios</h3>
+                <p class="empty-state-text">Intenta cambiar los filtros</p>
+            </div>
+        <% } else { %>
+            <div class="row g-4">
+                <% services.forEach((service, index) => { %>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card service-card h-100">
+                            <div class="card-body">
+                                <div class="feature-icon mb-4">
+                                    <i class="bi bi-<%= service.icono || 'tools' %>"></i>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <% if (service.tipo_dispositivo === 'smartphone') { %>
+                                        <span class="badge bg-primary"><i class="bi bi-phone"></i> Smartphone</span>
+                                    <% } else if (service.tipo_dispositivo === 'laptop') { %>
+                                        <span class="badge bg-secondary"><i class="bi bi-laptop"></i> Laptop</span>
+                                    <% } else { %>
+                                        <span class="badge" style="background: var(--color-accent-gradient);"><i class="bi bi-phone"></i> <i class="bi bi-laptop"></i> Ambos</span>
+                                    <% } %>
+                                </div>
+                                
+                                <h4 class="card-title"><%= service.nombre %></h4>
+                                <p class="card-text">
+                                    <%= service.descripcion_corta || (service.descripcion ? service.descripcion.substring(0, 120) + '...' : '') %>
+                                </p>
+                                
+                                <div class="d-flex justify-content-between align-items-center mt-4">
+                                    <div>
+                                        <span class="text-muted small">Desde</span>
+                                        <span class="card-price d-block">$<%= service.precio_base?.toFixed(2) %></span>
+                                    </div>
+                                    <% if (service.duracion_estimada) { %>
+                                        <div class="text-end">
+                                            <span class="text-muted small">Tiempo estimado</span>
+                                            <span class="d-block">
+                                                <i class="bi bi-clock text-accent"></i>
+                                                <% if (service.duracion_estimada >= 60) { %>
+                                                    <%= Math.floor(service.duracion_estimada / 60) %>h <%= service.duracion_estimada % 60 %>min
+                                                <% } else { %>
+                                                    <%= service.duracion_estimada %> min
+                                                <% } %>
+                                            </span>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-grid gap-2">
+                                    <a href="/servicios/<%= service.slug %>" class="btn btn-outline">
+                                        <i class="bi bi-info-circle"></i> Más información
+                                    </a>
+                                    <a href="/servicios/<%= service.slug %>/agendar" class="btn btn-primary">
+                                        <i class="bi bi-calendar-plus"></i> Agendar cita
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+        
+        <!-- Additional Info -->
+        <div class="row g-4 mt-5">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-patch-check"></i>
+                        </div>
+                        <h5>Garantía Incluida</h5>
+                        <p class="text-secondary mb-0">Todas nuestras reparaciones incluyen garantía de 3 a 6 meses según el servicio.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-lightning-charge"></i>
+                        </div>
+                        <h5>Reparación Express</h5>
+                        <p class="text-secondary mb-0">La mayoría de las reparaciones se completan el mismo día.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="bi bi-currency-dollar"></i>
+                        </div>
+                        <h5>Diagnóstico Gratuito</h5>
+                        <p class="text-secondary mb-0">Evaluamos tu dispositivo sin costo. Solo pagas si decides reparar.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section section-dark">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="mb-2">¿No encuentras el servicio que necesitas?</h3>
+                <p class="text-secondary mb-0">Contáctanos para una evaluación personalizada de tu dispositivo.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <a href="/contacto" class="btn btn-primary btn-lg">
+                    <i class="bi bi-chat-dots"></i> Contáctanos
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,73 +1,135 @@
 <%- layout('layouts/main') %>
 
-<section class="py-5">
+<section class="section" style="min-height: 80vh; display: flex; align-items: center;">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow">
+            <div class="col-md-6 col-lg-5">
+                <div class="card">
                     <div class="card-body p-5">
-                        <div class="text-center mb-4">
-                            <i class="bi bi-person-plus display-4 text-primary"></i>
-                            <h3 class="mt-2">Create Account</h3>
-                            <p class="text-muted">Join TechLand today</p>
+                        <!-- Header -->
+                        <div class="text-center mb-5">
+                            <div class="feature-icon mb-3" style="margin: 0 auto;">
+                                <i class="bi bi-person-plus"></i>
+                            </div>
+                            <h2 class="mb-2">Crear cuenta</h2>
+                            <p class="text-secondary">Únete a TechLand hoy</p>
                         </div>
                         
-                        <% if (error) { %>
-                            <div class="alert alert-danger" role="alert">
+                        <!-- Error Message -->
+                        <% if (typeof error !== 'undefined' && error) { %>
+                            <div class="alert alert-danger">
                                 <i class="bi bi-exclamation-circle"></i> <%= error %>
                             </div>
                         <% } %>
                         
+                        <!-- Register Form -->
                         <form action="/auth/register" method="POST">
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Full Name</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required>
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label for="nombre" class="form-label">Nombre *</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="nombre" 
+                                           name="nombre" 
+                                           placeholder="Tu nombre"
+                                           required>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="apellido" class="form-label">Apellido</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="apellido" 
+                                           name="apellido" 
+                                           placeholder="Tu apellido">
                                 </div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email Address</label>
+                            <div class="mb-4">
+                                <label for="email" class="form-label">Correo electrónico *</label>
                                 <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                                    <span class="input-group-text">
+                                        <i class="bi bi-envelope"></i>
+                                    </span>
+                                    <input type="email" 
+                                           class="form-control" 
+                                           id="email" 
+                                           name="email" 
+                                           placeholder="tu@email.com" 
+                                           required 
+                                           autocomplete="email">
                                 </div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
+                            <div class="mb-4">
+                                <label for="telefono" class="form-label">Teléfono</label>
                                 <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                    <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" minlength="6" required>
-                                </div>
-                                <small class="text-muted">Minimum 6 characters</small>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="confirmPassword" class="form-label">Confirm Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                                    <span class="input-group-text">
+                                        <i class="bi bi-telephone"></i>
+                                    </span>
+                                    <input type="tel" 
+                                           class="form-control" 
+                                           id="telefono" 
+                                           name="telefono" 
+                                           placeholder="+1 234 567 890">
                                 </div>
                             </div>
                             
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
-                                <label class="form-check-label" for="terms">
-                                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                            <div class="mb-4">
+                                <label for="password" class="form-label">Contraseña *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-lock"></i>
+                                    </span>
+                                    <input type="password" 
+                                           class="form-control" 
+                                           id="password" 
+                                           name="password" 
+                                           placeholder="Mínimo 8 caracteres"
+                                           minlength="8"
+                                           required
+                                           autocomplete="new-password">
+                                </div>
+                                <div class="form-text">Mínimo 8 caracteres</div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="confirmPassword" class="form-label">Confirmar contraseña *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-lock-fill"></i>
+                                    </span>
+                                    <input type="password" 
+                                           class="form-control" 
+                                           id="confirmPassword" 
+                                           name="confirmPassword" 
+                                           placeholder="Repite tu contraseña"
+                                           minlength="8"
+                                           required
+                                           autocomplete="new-password">
+                                </div>
+                            </div>
+                            
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
+                                <label class="form-check-label text-secondary small" for="terms">
+                                    Acepto los <a href="/terminos" class="text-accent">Términos de Servicio</a> 
+                                    y la <a href="/privacidad" class="text-accent">Política de Privacidad</a>
                                 </label>
                             </div>
                             
-                            <button type="submit" class="btn btn-primary w-100 mb-3">
-                                <i class="bi bi-person-plus"></i> Create Account
-                            </button>
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-person-plus"></i> Crear cuenta
+                                </button>
+                            </div>
                         </form>
                         
-                        <hr class="my-4">
-                        
+                        <!-- Login Link -->
                         <div class="text-center">
-                            <p class="mb-0">Already have an account? <a href="/auth/login" class="text-decoration-none">Sign in here</a></p>
+                            <p class="text-secondary mb-0">
+                                ¿Ya tienes cuenta? 
+                                <a href="/auth/login" class="text-accent">Inicia sesión</a>
+                            </p>
                         </div>
                     </div>
                 </div>

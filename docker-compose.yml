@@ -1,0 +1,101 @@
+# TechLand Docker Compose Configuration
+# Application + PostgreSQL Database
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: techland-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-techland}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-techland_secret_2024}
+      POSTGRES_DB: ${DB_NAME:-techland_db}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    networks:
+      - techland-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-techland} -d ${DB_NAME:-techland_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # TechLand Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: techland-app
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${PORT:-3000}
+      
+      # Database Configuration
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-techland}
+      DB_PASSWORD: ${DB_PASSWORD:-techland_secret_2024}
+      DB_NAME: ${DB_NAME:-techland_db}
+      
+      # JWT Configuration
+      JWT_SECRET: ${JWT_SECRET:-techland-jwt-super-secret-key-change-in-production}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-7d}
+      
+      # Session Configuration
+      SESSION_SECRET: ${SESSION_SECRET:-techland-session-secret-key-change-in-production}
+    ports:
+      - "${PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - techland-network
+    volumes:
+      - ./public/uploads:/app/public/uploads
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (r) => r.statusCode === 200 ? process.exit(0) : process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # pgAdmin (Optional - for database management)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: techland-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@techland.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    depends_on:
+      - db
+    networks:
+      - techland-network
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    profiles:
+      - tools
+
+networks:
+  techland-network:
+    driver: bridge
+    name: techland-network
+
+volumes:
+  postgres_data:
+    name: techland-postgres-data
+  pgadmin_data:
+    name: techland-pgadmin-data

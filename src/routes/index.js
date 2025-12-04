@@ -1,32 +1,37 @@
-import { readdirSync } from "node:fs";
+// Main Routes - TechLand
 import { Router } from "express";
-import { fileURLToPath } from "url";
-import path from "path";
-
+import { getHomePage, getAboutPage, getContactPage, submitContact } from "../controllers/home.controller.js";
 
 const router = Router();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Home page
+router.get("/", getHomePage);
 
-function removeExtension(fileName) {
-    const cleanFileName = fileName.split(".").shift();
-    return cleanFileName;
-}
+// Static pages
+router.get("/nosotros", getAboutPage);
+router.get("/about", getAboutPage);
+router.get("/contacto", getContactPage);
+router.get("/contact", getContactPage);
+router.post("/contacto", submitContact);
 
-/**
- * @param file tracks.ts
- */
-function loadRouter(file) {
-    const name = removeExtension(file);
-    if (name !== "index") {
-        import(`./${file}`).then((routerModule) => {
-            router.use(`/${name}`, routerModule.router);
-            console.log(`Loaded route: /${name}`);
-        });
-    }
-}
+// Import and use other routes
+import authRoutes from "./auth.routes.js";
+import productRoutes from "./product.routes.js";
+import serviceRoutes from "./service.routes.js";
+import courseRoutes from "./course.routes.js";
+import cartRoutes from "./cart.routes.js";
+import profileRoutes from "./profile.routes.js";
 
-readdirSync(__dirname).filter((file) => loadRouter(file));
+router.use("/auth", authRoutes);
+router.use("/productos", productRoutes);
+router.use("/products", productRoutes); // English alias
+router.use("/servicios", serviceRoutes);
+router.use("/services", serviceRoutes); // English alias
+router.use("/cursos", courseRoutes);
+router.use("/courses", courseRoutes); // English alias
+router.use("/cart", cartRoutes);
+router.use("/carrito", cartRoutes); // Spanish alias
+router.use("/perfil", profileRoutes);
+router.use("/profile", profileRoutes); // English alias
 
 export default router;

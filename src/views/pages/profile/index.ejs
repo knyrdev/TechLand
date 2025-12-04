@@ -1,0 +1,279 @@
+<%- layout('layouts/main') %>
+
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4">
+                <div class="card profile-sidebar">
+                    <div class="card-body text-center">
+                        <div class="profile-avatar">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <h5 class="profile-name"><%= user.nombre %> <%= user.apellido %></h5>
+                        <p class="profile-email"><%= user.email %></p>
+                        <span class="badge badge-role"><%= user.rol %></span>
+                    </div>
+                    <div class="profile-menu">
+                        <a href="/perfil" class="menu-item active">
+                            <i class="bi bi-person"></i> Mi Perfil
+                        </a>
+                        <a href="/perfil/pedidos" class="menu-item">
+                            <i class="bi bi-bag"></i> Mis Pedidos
+                        </a>
+                        <a href="/perfil/cursos" class="menu-item">
+                            <i class="bi bi-mortarboard"></i> Mis Cursos
+                        </a>
+                        <a href="/perfil/servicios" class="menu-item">
+                            <i class="bi bi-tools"></i> Mis Servicios
+                        </a>
+                        <a href="/perfil/configuracion" class="menu-item">
+                            <i class="bi bi-gear"></i> Configuración
+                        </a>
+                        <hr>
+                        <a href="/auth/logout" class="menu-item text-danger">
+                            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="profile-header mb-4">
+                    <h1 class="page-title">
+                        <i class="bi bi-person text-accent"></i> Mi Perfil
+                    </h1>
+                </div>
+                
+                <% if (typeof message !== 'undefined' && message) { %>
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle"></i> <%= message %>
+                    </div>
+                <% } %>
+                
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-circle"></i> <%= error %>
+                    </div>
+                <% } %>
+                
+                <!-- Profile Info -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-person-lines-fill"></i> Información Personal</h5>
+                        <button class="btn btn-outline btn-sm" onclick="toggleEditMode('personalInfo')">
+                            <i class="bi bi-pencil"></i> Editar
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <form action="/perfil/actualizar" method="POST" id="personalInfoForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nombre</label>
+                                    <input type="text" class="form-control" name="nombre" 
+                                           value="<%= user.nombre %>" disabled>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Apellido</label>
+                                    <input type="text" class="form-control" name="apellido" 
+                                           value="<%= user.apellido %>" disabled>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" 
+                                           value="<%= user.email %>" disabled readonly>
+                                    <small class="text-muted">El email no puede ser modificado</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Teléfono</label>
+                                    <input type="tel" class="form-control" name="telefono" 
+                                           value="<%= user.telefono || '' %>" disabled>
+                                </div>
+                            </div>
+                            <div class="form-actions mt-4" style="display: none;">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check"></i> Guardar Cambios
+                                </button>
+                                <button type="button" class="btn btn-outline" onclick="toggleEditMode('personalInfo')">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Address -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-geo-alt"></i> Dirección de Envío</h5>
+                        <button class="btn btn-outline btn-sm" onclick="toggleEditMode('addressInfo')">
+                            <i class="bi bi-pencil"></i> Editar
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <form action="/perfil/direccion" method="POST" id="addressInfoForm">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Dirección</label>
+                                    <input type="text" class="form-control" name="direccion" 
+                                           value="<%= user.direccion || '' %>" disabled
+                                           placeholder="Calle, número, edificio, piso">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Ciudad</label>
+                                    <input type="text" class="form-control" name="ciudad" 
+                                           value="<%= user.ciudad || '' %>" disabled>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Estado</label>
+                                    <input type="text" class="form-control" name="estado" 
+                                           value="<%= user.estado || '' %>" disabled>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Código Postal</label>
+                                    <input type="text" class="form-control" name="codigo_postal" 
+                                           value="<%= user.codigo_postal || '' %>" disabled>
+                                </div>
+                            </div>
+                            <div class="form-actions mt-4" style="display: none;">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check"></i> Guardar Dirección
+                                </button>
+                                <button type="button" class="btn btn-outline" onclick="toggleEditMode('addressInfo')">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Change Password -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-shield-lock"></i> Cambiar Contraseña</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/perfil/cambiar-password" method="POST" id="passwordForm">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Contraseña Actual</label>
+                                    <input type="password" class="form-control" name="current_password" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Nueva Contraseña</label>
+                                    <input type="password" class="form-control" name="new_password" 
+                                           minlength="8" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Confirmar Contraseña</label>
+                                    <input type="password" class="form-control" name="confirm_password" 
+                                           minlength="8" required>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-key"></i> Actualizar Contraseña
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.profile-sidebar .profile-avatar {
+    font-size: 5rem;
+    color: var(--accent);
+    margin-bottom: var(--space-3);
+}
+
+.profile-name {
+    margin-bottom: var(--space-1);
+}
+
+.profile-email {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: var(--space-2);
+}
+
+.badge-role {
+    background: var(--accent);
+    color: var(--bg-primary);
+    text-transform: capitalize;
+}
+
+.profile-menu {
+    padding: var(--space-3);
+    border-top: 1px solid var(--border-color);
+}
+
+.profile-menu .menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.profile-menu .menu-item:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.profile-menu .menu-item.active {
+    background: var(--accent);
+    color: var(--bg-primary);
+}
+
+.profile-menu .menu-item i {
+    font-size: 1.25rem;
+}
+
+.profile-menu hr {
+    margin: var(--space-3) 0;
+    border-color: var(--border-color);
+}
+
+.form-actions {
+    display: flex;
+    gap: var(--space-3);
+}
+</style>
+
+<script>
+function toggleEditMode(formId) {
+    const form = document.getElementById(formId + 'Form');
+    const inputs = form.querySelectorAll('input:not([readonly])');
+    const actions = form.querySelector('.form-actions');
+    
+    inputs.forEach(input => {
+        input.disabled = !input.disabled;
+    });
+    
+    if (actions.style.display === 'none') {
+        actions.style.display = 'flex';
+    } else {
+        actions.style.display = 'none';
+        form.reset();
+    }
+}
+
+// Password validation
+document.getElementById('passwordForm').addEventListener('submit', function(e) {
+    const newPass = this.querySelector('[name="new_password"]').value;
+    const confirmPass = this.querySelector('[name="confirm_password"]').value;
+    
+    if (newPass !== confirmPass) {
+        e.preventDefault();
+        showToast('Las contraseñas no coinciden', 'error');
+    }
+});
+</script>

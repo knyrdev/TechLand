@@ -1,10 +1,20 @@
 // Product Routes
 import { Router } from "express";
-import { getAllProducts, getProductById } from "../controllers/product.controller.js";
+import {
+    getAllProducts,
+    getProductById,
+    apiGetProducts,
+    apiGetProduct
+} from "../controllers/product.controller.js";
 
-const router = Router();
+export const router = Router();
 
+// Page routes
 router.get("/", getAllProducts);
 router.get("/:id", getProductById);
 
-export { router };
+// API routes
+router.get("/api/list", apiGetProducts);
+router.get("/api/:id", apiGetProduct);
+
+export default router;

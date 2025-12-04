@@ -1,0 +1,129 @@
+<%- layout('layouts/main') %>
+
+<section class="section">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <%- include('../../partials/profile-sidebar', { active: 'pedidos' }) %>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="profile-header mb-4">
+                    <h1 class="page-title">
+                        <i class="bi bi-bag text-accent"></i> Mis Pedidos
+                    </h1>
+                </div>
+                
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-circle"></i> <%= error %>
+                    </div>
+                <% } %>
+                
+                <% if (typeof orders === 'undefined' || orders.length === 0) { %>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="bi bi-bag-x"></i>
+                        </div>
+                        <h3 class="empty-state-title">No tienes pedidos</h3>
+                        <p class="empty-state-text">Cuando realices una compra, tus pedidos aparecerán aquí</p>
+                        <a href="/productos" class="btn btn-primary">Ver productos</a>
+                    </div>
+                <% } else { %>
+                    <div class="orders-list">
+                        <% orders.forEach(order => { %>
+                            <div class="card order-card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <h5 class="order-number mb-1">
+                                                Pedido #<%= order.numero_orden || order.id_pedido %>
+                                            </h5>
+                                            <p class="order-date text-muted mb-0">
+                                                <i class="bi bi-calendar3"></i>
+                                                <%= new Date(order.fecha_creacion).toLocaleDateString('es-ES', {
+                                                    year: 'numeric', month: 'long', day: 'numeric'
+                                                }) %>
+                                            </p>
+                                        </div>
+                                        <span class="badge badge-status <%= order.estado %>">
+                                            <%= order.estado %>
+                                        </span>
+                                    </div>
+                                    
+                                    <% if (order.items && order.items.length > 0) { %>
+                                        <div class="order-items-preview">
+                                            <% order.items.slice(0, 3).forEach(item => { %>
+                                                <span class="item-tag">
+                                                    <%= item.cantidad %>x <%= item.nombre %>
+                                                </span>
+                                            <% }); %>
+                                            <% if (order.items.length > 3) { %>
+                                                <span class="item-tag more">+<%= order.items.length - 3 %> más</span>
+                                            <% } %>
+                                        </div>
+                                    <% } %>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <span class="order-total">
+                                            Total: <strong>$<%= order.total?.toFixed(2) %></strong>
+                                        </span>
+                                        <a href="/perfil/pedidos/<%= order.id_pedido %>" class="btn btn-outline btn-sm">
+                                            Ver detalles <i class="bi bi-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.order-card {
+    transition: all var(--transition-fast);
+}
+
+.order-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.order-number {
+    font-family: var(--font-mono);
+}
+
+.badge-status {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.badge-status.pendiente { background: var(--warning); color: var(--bg-primary); }
+.badge-status.procesando { background: var(--info); color: white; }
+.badge-status.enviado { background: var(--accent); color: var(--bg-primary); }
+.badge-status.entregado { background: var(--success); color: white; }
+.badge-status.cancelado { background: var(--error); color: white; }
+
+.order-items-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.item-tag {
+    padding: var(--space-1) var(--space-2);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+}
+
+.item-tag.more {
+    background: var(--accent);
+    color: var(--bg-primary);
+}
+</style>

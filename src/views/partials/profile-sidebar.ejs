@@ -1,0 +1,89 @@
+<div class="col-lg-3 mb-4">
+    <div class="card profile-sidebar">
+        <div class="card-body text-center">
+            <div class="profile-avatar">
+                <i class="bi bi-person-circle"></i>
+            </div>
+            <h5 class="profile-name"><%= user?.nombre %> <%= user?.apellido %></h5>
+            <p class="profile-email"><%= user?.email %></p>
+            <span class="badge badge-role"><%= user?.rol %></span>
+        </div>
+        <div class="profile-menu">
+            <a href="/perfil" class="menu-item <%= typeof active !== 'undefined' && active === 'perfil' ? 'active' : '' %>">
+                <i class="bi bi-person"></i> Mi Perfil
+            </a>
+            <a href="/perfil/pedidos" class="menu-item <%= typeof active !== 'undefined' && active === 'pedidos' ? 'active' : '' %>">
+                <i class="bi bi-bag"></i> Mis Pedidos
+            </a>
+            <a href="/perfil/cursos" class="menu-item <%= typeof active !== 'undefined' && active === 'cursos' ? 'active' : '' %>">
+                <i class="bi bi-mortarboard"></i> Mis Cursos
+            </a>
+            <a href="/perfil/servicios" class="menu-item <%= typeof active !== 'undefined' && active === 'servicios' ? 'active' : '' %>">
+                <i class="bi bi-tools"></i> Mis Servicios
+            </a>
+            <hr>
+            <a href="/auth/logout" class="menu-item text-danger">
+                <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-sidebar .profile-avatar {
+    font-size: 5rem;
+    color: var(--accent);
+    margin-bottom: var(--space-3);
+}
+
+.profile-name {
+    margin-bottom: var(--space-1);
+}
+
+.profile-email {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: var(--space-2);
+}
+
+.badge-role {
+    background: var(--accent);
+    color: var(--bg-primary);
+    text-transform: capitalize;
+}
+
+.profile-menu {
+    padding: var(--space-3);
+    border-top: 1px solid var(--border-color);
+}
+
+.profile-menu .menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.profile-menu .menu-item:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.profile-menu .menu-item.active {
+    background: var(--accent);
+    color: var(--bg-primary);
+}
+
+.profile-menu .menu-item i {
+    font-size: 1.25rem;
+}
+
+.profile-menu hr {
+    margin: var(--space-3) 0;
+    border-color: var(--border-color);
+}
+</style>

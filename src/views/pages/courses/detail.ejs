@@ -1,132 +1,279 @@
 <%- layout('layouts/main') %>
 
-<section class="py-5">
+<section class="section">
     <div class="container">
         <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item"><a href="/courses">Courses</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><%= course.name %></li>
-            </ol>
+        <nav class="breadcrumb mb-4">
+            <a href="/">Inicio</a>
+            <span>/</span>
+            <a href="/cursos">Cursos</a>
+            <span>/</span>
+            <span><%= course.titulo %></span>
         </nav>
         
         <div class="row">
-            <!-- Course Info -->
-            <div class="col-lg-8 mb-4">
-                <!-- Course Header -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-img-top bg-gradient d-flex align-items-center justify-content-center" style="height: 300px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                        <i class="bi bi-play-circle text-white" style="font-size: 8rem;"></i>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <span class="badge bg-secondary"><%= course.category %></span>
-                            <span class="badge <%= course.level === 'Beginner' ? 'bg-success' : course.level === 'Intermediate' ? 'bg-warning text-dark' : 'bg-danger' %>">
-                                <%= course.level %>
+            <!-- Course Content -->
+            <div class="col-lg-8">
+                <div class="course-header mb-4">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="level-badge <%= course.nivel %>">
+                            <%= course.nivel %>
+                        </span>
+                        <% if (course.destacado) { %>
+                            <span class="badge badge-popular">
+                                <i class="bi bi-star-fill"></i> Popular
                             </span>
-                        </div>
-                        
-                        <h1 class="mb-3"><%= course.name %></h1>
-                        <p class="lead"><%= course.description %></p>
-                        
-                        <div class="d-flex flex-wrap gap-4 text-muted mb-3">
-                            <span><i class="bi bi-person-circle"></i> Instructor: <strong><%= course.instructor %></strong></span>
-                            <span><i class="bi bi-people"></i> <%= course.students %> students</span>
-                        </div>
-                        
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="text-warning me-2">
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-half"></i>
-                            </div>
-                            <span class="text-muted">(4.5) - 256 reviews</span>
-                        </div>
+                        <% } %>
                     </div>
-                </div>
-                
-                <!-- What You'll Learn -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-white">
-                        <h4 class="mb-0"><i class="bi bi-check-circle"></i> What You'll Learn</h4>
+                    
+                    <h1 class="course-title"><%= course.titulo %></h1>
+                    
+                    <p class="course-subtitle"><%= course.descripcion_corta || '' %></p>
+                    
+                    <div class="course-meta">
+                        <% if (course.calificacion_promedio > 0) { %>
+                            <span class="meta-item rating">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <strong><%= course.calificacion_promedio?.toFixed(1) %></strong>
+                                (<%= course.total_resenas || 0 %> valoraciones)
+                            </span>
+                        <% } %>
+                        <span class="meta-item">
+                            <i class="bi bi-people"></i>
+                            <%= course.total_estudiantes || 0 %> estudiantes
+                        </span>
+                        <span class="meta-item">
+                            <i class="bi bi-clock"></i>
+                            <%= course.duracion_horas %> horas
+                        </span>
+                        <% if (course.total_lecciones) { %>
+                            <span class="meta-item">
+                                <i class="bi bi-collection-play"></i>
+                                <%= course.total_lecciones %> lecciones
+                            </span>
+                        <% } %>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul class="list-unstyled">
-                                    <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Core concepts and fundamentals</li>
-                                    <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Practical hands-on projects</li>
-                                    <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Industry best practices</li>
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul class="list-unstyled">
-                                    <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Real-world applications</li>
-                                    <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Problem-solving techniques</li>
-                                    <li class="mb-2"><i class="bi bi-check text-success me-2"></i>Career advancement skills</li>
-                                </ul>
-                            </div>
+                    
+                    <div class="instructor-info mt-3">
+                        <div class="instructor-avatar">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <div>
+                            <span class="text-muted">Instructor</span>
+                            <p class="instructor-name mb-0"><%= course.instructor %></p>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Course Content -->
-                <div class="card shadow-sm">
-                    <div class="card-header bg-white">
-                        <h4 class="mb-0"><i class="bi bi-collection-play"></i> Course Content</h4>
+                <!-- Course Video Preview -->
+                <div class="course-preview mb-4">
+                    <div class="video-placeholder">
+                        <i class="bi bi-play-circle"></i>
+                        <span>Vista previa del curso</span>
                     </div>
-                    <div class="card-body">
-                        <p class="text-muted mb-3"><%= course.lessons %> lessons • <%= course.duration %> total</p>
-                        
-                        <div class="accordion" id="courseContent">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#module1">
-                                        Module 1: Introduction
-                                    </button>
-                                </h2>
-                                <div id="module1" class="accordion-collapse collapse show" data-bs-parent="#courseContent">
-                                    <div class="accordion-body">
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                <span><i class="bi bi-play-circle me-2"></i>Welcome to the Course</span>
-                                                <span class="text-muted">5:00</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                <span><i class="bi bi-play-circle me-2"></i>Course Overview</span>
-                                                <span class="text-muted">10:00</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                <span><i class="bi bi-play-circle me-2"></i>Setting Up Environment</span>
-                                                <span class="text-muted">15:00</span>
-                                            </li>
-                                        </ul>
-                                    </div>
+                </div>
+                
+                <!-- Course Tabs -->
+                <div class="course-tabs">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#description">
+                                Descripción
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#content">
+                                Contenido
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#reviews">
+                                Reseñas
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content">
+                        <!-- Description Tab -->
+                        <div class="tab-pane fade show active" id="description">
+                            <div class="course-description">
+                                <h4>Acerca de este curso</h4>
+                                <%= course.descripcion %>
+                                
+                                <% if (course.requisitos) { %>
+                                    <h4 class="mt-4">Requisitos</h4>
+                                    <ul class="requirements-list">
+                                        <% course.requisitos.split('\n').forEach(req => { %>
+                                            <% if (req.trim()) { %>
+                                                <li><i class="bi bi-check-circle"></i> <%= req.trim() %></li>
+                                            <% } %>
+                                        <% }); %>
+                                    </ul>
+                                <% } %>
+                                
+                                <h4 class="mt-4">Lo que aprenderás</h4>
+                                <div class="learn-grid">
+                                    <% const topics = [
+                                        'Diagnóstico de problemas comunes',
+                                        'Uso de herramientas profesionales',
+                                        'Técnicas de reparación seguras',
+                                        'Microsoldadura básica y avanzada',
+                                        'Cambio de componentes',
+                                        'Atención al cliente profesional'
+                                    ]; %>
+                                    <% topics.forEach(topic => { %>
+                                        <div class="learn-item">
+                                            <i class="bi bi-check-circle-fill text-success"></i>
+                                            <span><%= topic %></span>
+                                        </div>
+                                    <% }); %>
                                 </div>
                             </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#module2">
-                                        Module 2: Core Concepts
-                                    </button>
-                                </h2>
-                                <div id="module2" class="accordion-collapse collapse" data-bs-parent="#courseContent">
-                                    <div class="accordion-body">
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                <span><i class="bi bi-lock me-2"></i>Fundamentals Part 1</span>
-                                                <span class="text-muted">20:00</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                <span><i class="bi bi-lock me-2"></i>Fundamentals Part 2</span>
-                                                <span class="text-muted">25:00</span>
-                                            </li>
-                                        </ul>
+                        </div>
+                        
+                        <!-- Content Tab -->
+                        <div class="tab-pane fade" id="content">
+                            <div class="course-curriculum">
+                                <div class="curriculum-header">
+                                    <h4>Contenido del curso</h4>
+                                    <span class="text-muted">
+                                        <%= course.total_lecciones || '10' %> lecciones • 
+                                        <%= course.duracion_horas %> horas de contenido
+                                    </span>
+                                </div>
+                                
+                                <% if (typeof lessons !== 'undefined' && lessons && lessons.length > 0) { %>
+                                    <div class="curriculum-list">
+                                        <% lessons.forEach((lesson, idx) => { %>
+                                            <div class="curriculum-item">
+                                                <div class="lesson-info">
+                                                    <span class="lesson-number"><%= idx + 1 %></span>
+                                                    <span class="lesson-title"><%= lesson.titulo %></span>
+                                                </div>
+                                                <span class="lesson-duration"><%= lesson.duracion_minutos %> min</span>
+                                            </div>
+                                        <% }); %>
+                                    </div>
+                                <% } else { %>
+                                    <!-- Sample curriculum -->
+                                    <div class="accordion curriculum-accordion" id="curriculumAccordion">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#module1">
+                                                    <span class="module-title">Módulo 1: Introducción y Herramientas</span>
+                                                    <span class="module-meta">4 lecciones • 45 min</span>
+                                                </button>
+                                            </h2>
+                                            <div id="module1" class="accordion-collapse collapse show" data-bs-parent="#curriculumAccordion">
+                                                <div class="accordion-body">
+                                                    <div class="curriculum-item">
+                                                        <div class="lesson-info">
+                                                            <i class="bi bi-play-circle"></i>
+                                                            <span>Bienvenida al curso</span>
+                                                        </div>
+                                                        <span class="lesson-duration">5 min</span>
+                                                    </div>
+                                                    <div class="curriculum-item">
+                                                        <div class="lesson-info">
+                                                            <i class="bi bi-play-circle"></i>
+                                                            <span>Herramientas necesarias</span>
+                                                        </div>
+                                                        <span class="lesson-duration">15 min</span>
+                                                    </div>
+                                                    <div class="curriculum-item">
+                                                        <div class="lesson-info">
+                                                            <i class="bi bi-play-circle"></i>
+                                                            <span>Configuración del espacio de trabajo</span>
+                                                        </div>
+                                                        <span class="lesson-duration">12 min</span>
+                                                    </div>
+                                                    <div class="curriculum-item">
+                                                        <div class="lesson-info">
+                                                            <i class="bi bi-play-circle"></i>
+                                                            <span>Normas de seguridad</span>
+                                                        </div>
+                                                        <span class="lesson-duration">13 min</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#module2">
+                                                    <span class="module-title">Módulo 2: Diagnóstico</span>
+                                                    <span class="module-meta">5 lecciones • 1h 20min</span>
+                                                </button>
+                                            </h2>
+                                            <div id="module2" class="accordion-collapse collapse" data-bs-parent="#curriculumAccordion">
+                                                <div class="accordion-body">
+                                                    <div class="curriculum-item">
+                                                        <div class="lesson-info">
+                                                            <i class="bi bi-lock"></i>
+                                                            <span>Diagnóstico inicial</span>
+                                                        </div>
+                                                        <span class="lesson-duration">20 min</span>
+                                                    </div>
+                                                    <div class="curriculum-item">
+                                                        <div class="lesson-info">
+                                                            <i class="bi bi-lock"></i>
+                                                            <span>Problemas de software vs hardware</span>
+                                                        </div>
+                                                        <span class="lesson-duration">25 min</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        
+                        <!-- Reviews Tab -->
+                        <div class="tab-pane fade" id="reviews">
+                            <div class="course-reviews">
+                                <div class="reviews-summary">
+                                    <div class="rating-big">
+                                        <span class="rating-number"><%= course.calificacion_promedio?.toFixed(1) || '0.0' %></span>
+                                        <div class="stars">
+                                            <% for (let i = 1; i <= 5; i++) { %>
+                                                <i class="bi bi-star<%= i <= Math.round(course.calificacion_promedio || 0) ? '-fill' : '' %>"></i>
+                                            <% } %>
+                                        </div>
+                                        <span class="rating-count"><%= course.total_resenas || 0 %> valoraciones</span>
                                     </div>
                                 </div>
+                                
+                                <% if (typeof reviews !== 'undefined' && reviews && reviews.length > 0) { %>
+                                    <div class="reviews-list">
+                                        <% reviews.forEach(review => { %>
+                                            <div class="review-item">
+                                                <div class="review-header">
+                                                    <div class="reviewer-avatar">
+                                                        <i class="bi bi-person-circle"></i>
+                                                    </div>
+                                                    <div class="reviewer-info">
+                                                        <h6><%= review.usuario_nombre %></h6>
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div class="stars small">
+                                                                <% for (let i = 1; i <= 5; i++) { %>
+                                                                    <i class="bi bi-star<%= i <= review.calificacion ? '-fill' : '' %>"></i>
+                                                                <% } %>
+                                                            </div>
+                                                            <span class="text-muted small"><%= new Date(review.fecha).toLocaleDateString() %></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p class="review-text"><%= review.comentario %></p>
+                                            </div>
+                                        <% }); %>
+                                    </div>
+                                <% } else { %>
+                                    <div class="empty-reviews">
+                                        <i class="bi bi-chat-square-text"></i>
+                                        <p>Aún no hay reseñas para este curso</p>
+                                    </div>
+                                <% } %>
                             </div>
                         </div>
                     </div>
@@ -135,60 +282,80 @@
             
             <!-- Sidebar -->
             <div class="col-lg-4">
-                <div class="card shadow-sm sticky-top" style="top: 80px;">
-                    <div class="card-body">
-                        <h2 class="text-primary mb-4">$<%= course.price.toFixed(2) %></h2>
-                        
-                        <form action="/cart/add" method="POST" class="mb-3">
-                            <input type="hidden" name="id" value="<%= course.id %>">
-                            <input type="hidden" name="type" value="course">
-                            <button type="submit" class="btn btn-primary btn-lg w-100 mb-2">
-                                <i class="bi bi-cart-plus"></i> Add to Cart
-                            </button>
-                        </form>
-                        
-                        <button class="btn btn-outline-secondary w-100 mb-4">
-                            <i class="bi bi-heart"></i> Add to Wishlist
-                        </button>
-                        
-                        <h6 class="mb-3">This course includes:</h6>
-                        <ul class="list-unstyled">
-                            <li class="mb-2"><i class="bi bi-clock text-primary me-2"></i><%= course.duration %> of content</li>
-                            <li class="mb-2"><i class="bi bi-collection-play text-primary me-2"></i><%= course.lessons %> lessons</li>
-                            <li class="mb-2"><i class="bi bi-infinity text-primary me-2"></i>Lifetime access</li>
-                            <li class="mb-2"><i class="bi bi-phone text-primary me-2"></i>Access on mobile</li>
-                            <li class="mb-2"><i class="bi bi-award text-primary me-2"></i>Certificate of completion</li>
-                            <li class="mb-2"><i class="bi bi-arrow-counterclockwise text-primary me-2"></i>30-day money back</li>
-                        </ul>
+                <div class="course-sidebar">
+                    <div class="card sticky-card">
+                        <div class="card-body">
+                            <div class="price-container mb-4">
+                                <% if (course.precio_oferta) { %>
+                                    <span class="current-price">$<%= course.precio_oferta.toFixed(2) %></span>
+                                    <span class="original-price">$<%= course.precio.toFixed(2) %></span>
+                                    <span class="discount-badge">
+                                        -<%= Math.round((1 - course.precio_oferta / course.precio) * 100) %>% OFF
+                                    </span>
+                                <% } else { %>
+                                    <span class="current-price">$<%= course.precio.toFixed(2) %></span>
+                                <% } %>
+                            </div>
+                            
+                            <form action="/cart/add" method="POST" class="add-to-cart-form">
+                                <input type="hidden" name="id" value="<%= course.id_curso %>">
+                                <input type="hidden" name="type" value="curso">
+                                
+                                <div class="d-grid gap-2 mb-4">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-cart-plus"></i> Comprar curso
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <p class="text-center text-muted small mb-4">
+                                <i class="bi bi-shield-check"></i> Garantía de 30 días
+                            </p>
+                            
+                            <div class="course-includes">
+                                <h6>Este curso incluye:</h6>
+                                <ul>
+                                    <li><i class="bi bi-play-circle"></i> <%= course.duracion_horas %> horas de video</li>
+                                    <li><i class="bi bi-collection-play"></i> <%= course.total_lecciones || '10+' %> lecciones</li>
+                                    <li><i class="bi bi-infinity"></i> Acceso de por vida</li>
+                                    <li><i class="bi bi-phone"></i> Acceso en móvil y TV</li>
+                                    <li><i class="bi bi-patch-check"></i> Certificado de finalización</li>
+                                    <li><i class="bi bi-download"></i> Recursos descargables</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Related Courses -->
-        <% if (relatedCourses.length > 0) { %>
-            <section class="mt-5">
-                <h3 class="mb-4">Related Courses</h3>
-                <div class="row g-4">
-                    <% relatedCourses.forEach(related => { %>
-                        <div class="col-md-4">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-img-top bg-gradient d-flex align-items-center justify-content-center" style="height: 120px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                                    <i class="bi bi-play-circle display-4 text-white"></i>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="card-title"><%= related.name %></h6>
-                                    <p class="text-muted small"><i class="bi bi-person"></i> <%= related.instructor %></p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="fw-bold text-primary">$<%= related.price.toFixed(2) %></span>
-                                        <a href="/courses/<%= related.id %>" class="btn btn-sm btn-outline-primary">View</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <% }); %>
-                </div>
-            </section>
-        <% } %>
     </div>
 </section>
+
+<!-- Related Courses -->
+<% if (typeof relatedCourses !== 'undefined' && relatedCourses && relatedCourses.length > 0) { %>
+<section class="section section-dark">
+    <div class="container">
+        <h2 class="section-title">Cursos Relacionados</h2>
+        <div class="row g-4">
+            <% relatedCourses.slice(0, 3).forEach(related => { %>
+                <div class="col-md-4">
+                    <div class="card course-card h-100">
+                        <div class="card-img-wrapper">
+                            <i class="bi bi-mortarboard"></i>
+                        </div>
+                        <div class="card-body">
+                            <span class="level-badge <%= related.nivel %>"><%= related.nivel %></span>
+                            <h5 class="card-title mt-2"><%= related.titulo %></h5>
+                            <p class="text-muted small"><i class="bi bi-person"></i> <%= related.instructor %></p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="card-price">$<%= (related.precio_oferta || related.precio).toFixed(2) %></span>
+                                <a href="/cursos/<%= related.slug %>" class="btn btn-outline btn-sm">Ver curso</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</section>
+<% } %>

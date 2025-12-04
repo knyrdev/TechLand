@@ -1,161 +1,339 @@
 <%- layout('layouts/main') %>
 
-<section class="py-5">
+<section class="section">
     <div class="container">
-        <h2 class="mb-4"><i class="bi bi-credit-card"></i> Checkout</h2>
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb mb-4">
+            <a href="/">Inicio</a>
+            <span>/</span>
+            <a href="/cart">Carrito</a>
+            <span>/</span>
+            <span>Checkout</span>
+        </nav>
+        
+        <h1 class="page-title mb-4">
+            <i class="bi bi-credit-card text-accent"></i> Finalizar Compra
+        </h1>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-circle"></i> <%= error %>
+            </div>
+        <% } %>
         
         <div class="row">
             <!-- Checkout Form -->
-            <div class="col-lg-8 mb-4">
-                <form action="/cart/process" method="POST">
-                    <!-- Billing Information -->
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header bg-white">
-                            <h5 class="mb-0"><i class="bi bi-person"></i> Billing Information</h5>
+            <div class="col-lg-8">
+                <form action="/cart/process-payment" method="POST" id="checkoutForm">
+                    <!-- Contact Info -->
+                    <div class="card checkout-card mb-4">
+                        <div class="card-header">
+                            <h5><i class="bi bi-person"></i> Información de contacto</h5>
                         </div>
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="firstName" class="form-label">First Name</label>
-                                    <input type="text" class="form-control" id="firstName" name="firstName" required>
+                            <% if (typeof user !== 'undefined' && user) { %>
+                                <div class="user-info-box">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="user-avatar">
+                                            <i class="bi bi-person-circle"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0"><%= user.nombre %> <%= user.apellido %></h6>
+                                            <p class="text-muted mb-0"><%= user.email %></p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="lastName" class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" id="lastName" name="lastName" required>
+                            <% } else { %>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nombre *</label>
+                                        <input type="text" class="form-control" name="nombre" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Apellido *</label>
+                                        <input type="text" class="form-control" name="apellido" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email *</label>
+                                        <input type="email" class="form-control" name="email" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Teléfono *</label>
+                                        <input type="tel" class="form-control" name="telefono" required>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <p class="text-muted small">
+                                        ¿Ya tienes cuenta? <a href="/auth/login?redirect=/cart/checkout">Inicia sesión</a>
+                                    </p>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                    
+                    <!-- Shipping (only for products) -->
+                    <% const hasProducts = typeof cart !== 'undefined' && cart.items && cart.items.some(item => item.type === 'producto'); %>
+                    <% if (hasProducts) { %>
+                        <div class="card checkout-card mb-4">
+                            <div class="card-header">
+                                <h5><i class="bi bi-truck"></i> Dirección de envío</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label">Dirección *</label>
+                                        <input type="text" class="form-control" name="direccion" 
+                                               placeholder="Calle, número, edificio, piso" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Ciudad *</label>
+                                        <input type="text" class="form-control" name="ciudad" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Estado *</label>
+                                        <input type="text" class="form-control" name="estado" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Código Postal *</label>
+                                        <input type="text" class="form-control" name="codigo_postal" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Notas de entrega (opcional)</label>
+                                        <textarea class="form-control" name="notas_envio" rows="2" 
+                                                  placeholder="Instrucciones especiales para la entrega"></textarea>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" value="<%= user ? user.email : '' %>" required>
+                        </div>
+                    <% } %>
+                    
+                    <!-- Payment Method -->
+                    <div class="card checkout-card mb-4">
+                        <div class="card-header">
+                            <h5><i class="bi bi-credit-card-2-front"></i> Método de pago</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="payment-methods">
+                                <label class="payment-option">
+                                    <input type="radio" name="metodo_pago" value="tarjeta" checked>
+                                    <div class="payment-content">
+                                        <i class="bi bi-credit-card"></i>
+                                        <span>Tarjeta de Crédito/Débito</span>
+                                    </div>
+                                </label>
+                                
+                                <label class="payment-option">
+                                    <input type="radio" name="metodo_pago" value="paypal">
+                                    <div class="payment-content">
+                                        <i class="bi bi-paypal"></i>
+                                        <span>PayPal</span>
+                                    </div>
+                                </label>
+                                
+                                <label class="payment-option">
+                                    <input type="radio" name="metodo_pago" value="transferencia">
+                                    <div class="payment-content">
+                                        <i class="bi bi-bank"></i>
+                                        <span>Transferencia Bancaria</span>
+                                    </div>
+                                </label>
+                                
+                                <label class="payment-option">
+                                    <input type="radio" name="metodo_pago" value="pago_movil">
+                                    <div class="payment-content">
+                                        <i class="bi bi-phone"></i>
+                                        <span>Pago Móvil</span>
+                                    </div>
+                                </label>
                             </div>
-                            <div class="mb-3">
-                                <label for="phone" class="form-label">Phone</label>
-                                <input type="tel" class="form-control" id="phone" name="phone" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="address" class="form-label">Address</label>
-                                <input type="text" class="form-control" id="address" name="address" required>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="city" class="form-label">City</label>
-                                    <input type="text" class="form-control" id="city" name="city" required>
+                            
+                            <!-- Card Details (shown when card is selected) -->
+                            <div class="card-details mt-4" id="cardDetails">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label">Número de tarjeta</label>
+                                        <input type="text" class="form-control" name="card_number" 
+                                               placeholder="1234 5678 9012 3456" maxlength="19">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Fecha de expiración</label>
+                                        <input type="text" class="form-control" name="card_expiry" 
+                                               placeholder="MM/YY" maxlength="5">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">CVV</label>
+                                        <input type="text" class="form-control" name="card_cvv" 
+                                               placeholder="123" maxlength="4">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Nombre en la tarjeta</label>
+                                        <input type="text" class="form-control" name="card_name" 
+                                               placeholder="Como aparece en la tarjeta">
+                                    </div>
                                 </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="state" class="form-label">State</label>
-                                    <input type="text" class="form-control" id="state" name="state" required>
+                            </div>
+                            
+                            <!-- Bank Details (shown when transfer is selected) -->
+                            <div class="bank-details mt-4" id="bankDetails" style="display: none;">
+                                <div class="alert alert-info">
+                                    <h6><i class="bi bi-info-circle"></i> Datos para transferencia:</h6>
+                                    <p class="mb-1"><strong>Banco:</strong> Banco Nacional</p>
+                                    <p class="mb-1"><strong>Cuenta:</strong> 0000-0000-00-0000000000</p>
+                                    <p class="mb-1"><strong>Titular:</strong> TechLand C.A.</p>
+                                    <p class="mb-1"><strong>RIF:</strong> J-00000000-0</p>
+                                    <p class="mb-0 small text-muted">Envía el comprobante a pagos@techland.com</p>
                                 </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="zip" class="form-label">ZIP Code</label>
-                                    <input type="text" class="form-control" id="zip" name="zip" required>
+                            </div>
+                            
+                            <!-- Pago Movil Details -->
+                            <div class="pago-movil-details mt-4" id="pagoMovilDetails" style="display: none;">
+                                <div class="alert alert-info">
+                                    <h6><i class="bi bi-info-circle"></i> Datos para pago móvil:</h6>
+                                    <p class="mb-1"><strong>Banco:</strong> 0102</p>
+                                    <p class="mb-1"><strong>Teléfono:</strong> 0424-0000000</p>
+                                    <p class="mb-1"><strong>Cédula:</strong> V-00000000</p>
+                                    <p class="mb-0 small text-muted">Envía el comprobante a pagos@techland.com</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Payment Information -->
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header bg-white">
-                            <h5 class="mb-0"><i class="bi bi-credit-card-2-front"></i> Payment Method</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" value="credit" checked>
-                                <label class="form-check-label" for="creditCard">
-                                    <i class="bi bi-credit-card"></i> Credit Card
-                                </label>
-                            </div>
-                            
-                            <div id="creditCardForm">
-                                <div class="mb-3">
-                                    <label for="cardNumber" class="form-label">Card Number</label>
-                                    <input type="text" class="form-control" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456">
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="expiry" class="form-label">Expiry Date</label>
-                                        <input type="text" class="form-control" id="expiry" name="expiry" placeholder="MM/YY">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="cvv" class="form-label">CVV</label>
-                                        <input type="text" class="form-control" id="cvv" name="cvv" placeholder="123">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <hr>
-                            
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="paypal" value="paypal">
-                                <label class="form-check-label" for="paypal">
-                                    <i class="bi bi-paypal"></i> PayPal
-                                </label>
-                            </div>
-                            
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentMethod" id="bankTransfer" value="bank">
-                                <label class="form-check-label" for="bankTransfer">
-                                    <i class="bi bi-bank"></i> Bank Transfer
-                                </label>
-                            </div>
-                        </div>
+                    <!-- Terms -->
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="terms" required>
+                        <label class="form-check-label" for="terms">
+                            Acepto los <a href="/terminos" target="_blank">términos y condiciones</a> 
+                            y la <a href="/privacidad" target="_blank">política de privacidad</a>
+                        </label>
                     </div>
-                    
-                    <button type="submit" class="btn btn-primary btn-lg w-100">
-                        <i class="bi bi-lock"></i> Complete Order - $<%= total %>
-                    </button>
                 </form>
             </div>
             
             <!-- Order Summary -->
             <div class="col-lg-4">
-                <div class="card shadow-sm sticky-top" style="top: 80px;">
-                    <div class="card-header bg-white">
-                        <h5 class="mb-0">Order Summary</h5>
+                <div class="card checkout-summary sticky-card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-receipt"></i> Resumen del pedido</h5>
                     </div>
                     <div class="card-body">
-                        <% cart.forEach(item => { %>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>
-                                    <%= item.name %>
-                                    <% if (item.quantity > 1) { %>
-                                        <small class="text-muted">x<%= item.quantity %></small>
-                                    <% } %>
-                                </span>
-                                <span>$<%= (item.price * item.quantity).toFixed(2) %></span>
+                        <% if (typeof cart !== 'undefined' && cart.items && cart.items.length > 0) { %>
+                            <div class="order-items">
+                                <% cart.items.forEach(item => { %>
+                                    <div class="order-item">
+                                        <div class="item-info">
+                                            <span class="item-qty"><%= item.quantity %>x</span>
+                                            <span class="item-name"><%= item.name %></span>
+                                        </div>
+                                        <span class="item-price">$<%= (item.price * item.quantity).toFixed(2) %></span>
+                                    </div>
+                                <% }); %>
                             </div>
-                        <% }); %>
-                        
-                        <hr>
-                        
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Subtotal</span>
-                            <span>$<%= subtotal %></span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Tax (16%)</span>
-                            <span>$<%= tax %></span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Shipping</span>
-                            <span class="text-success">Free</span>
-                        </div>
-                        
-                        <hr>
-                        
-                        <div class="d-flex justify-content-between">
-                            <strong>Total</strong>
-                            <strong class="text-primary fs-5">$<%= total %></strong>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-white">
-                        <div class="d-flex align-items-center text-muted small">
-                            <i class="bi bi-shield-check me-2"></i>
-                            <span>Your payment is secure and encrypted</span>
-                        </div>
+                            
+                            <hr>
+                            
+                            <div class="order-totals">
+                                <div class="total-row">
+                                    <span>Subtotal</span>
+                                    <span>$<%= cart.subtotal?.toFixed(2) || '0.00' %></span>
+                                </div>
+                                <% if (hasProducts) { %>
+                                    <div class="total-row">
+                                        <span>Envío</span>
+                                        <span class="text-success">Gratis</span>
+                                    </div>
+                                <% } %>
+                                <% if (cart.discount && cart.discount > 0) { %>
+                                    <div class="total-row text-success">
+                                        <span>Descuento</span>
+                                        <span>-$<%= cart.discount.toFixed(2) %></span>
+                                    </div>
+                                <% } %>
+                                <div class="total-row total-final">
+                                    <span>Total</span>
+                                    <span>$<%= cart.total?.toFixed(2) || '0.00' %></span>
+                                </div>
+                            </div>
+                            
+                            <!-- Coupon -->
+                            <div class="coupon-section mt-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Código de cupón" id="couponCode">
+                                    <button class="btn btn-outline" type="button" onclick="applyCoupon()">
+                                        Aplicar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid mt-4">
+                                <button type="submit" form="checkoutForm" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-lock"></i> Pagar $<%= cart.total?.toFixed(2) || '0.00' %>
+                                </button>
+                            </div>
+                            
+                            <div class="secure-badge mt-3 text-center">
+                                <i class="bi bi-shield-lock"></i>
+                                <span class="text-muted small">Pago 100% seguro</span>
+                            </div>
+                        <% } else { %>
+                            <div class="empty-cart-notice">
+                                <i class="bi bi-cart-x"></i>
+                                <p>Tu carrito está vacío</p>
+                                <a href="/productos" class="btn btn-primary">Ver productos</a>
+                            </div>
+                        <% } %>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<script>
+// Payment method toggle
+document.querySelectorAll('input[name="metodo_pago"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('cardDetails').style.display = 
+            this.value === 'tarjeta' ? 'block' : 'none';
+        document.getElementById('bankDetails').style.display = 
+            this.value === 'transferencia' ? 'block' : 'none';
+        document.getElementById('pagoMovilDetails').style.display = 
+            this.value === 'pago_movil' ? 'block' : 'none';
+    });
+});
+
+// Card number formatting
+document.querySelector('input[name="card_number"]')?.addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\s/g, '').replace(/\D/g, '');
+    let formatted = value.match(/.{1,4}/g)?.join(' ') || '';
+    e.target.value = formatted;
+});
+
+// Expiry formatting
+document.querySelector('input[name="card_expiry"]')?.addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2);
+    }
+    e.target.value = value;
+});
+
+function applyCoupon() {
+    const code = document.getElementById('couponCode').value;
+    if (!code) return;
+    
+    fetch('/cart/apply-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Cupón aplicado correctamente', 'success');
+            location.reload();
+        } else {
+            showToast(data.message || 'Cupón no válido', 'error');
+        }
+    });
+}
+</script>

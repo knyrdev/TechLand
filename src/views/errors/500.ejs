@@ -1,26 +1,166 @@
 <%- layout('layouts/main') %>
 
-<section class="py-5">
+<section class="error-section">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6 text-center">
-                <div class="mb-4">
-                    <i class="bi bi-exclamation-triangle display-1 text-danger" style="font-size: 8rem;"></i>
+        <div class="error-content">
+            <div class="error-illustration">
+                <span class="error-code">500</span>
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            
+            <h1 class="error-title">Error del servidor</h1>
+            <p class="error-description">
+                Ha ocurrido un error inesperado. Nuestro equipo ha sido notificado y estamos trabajando para solucionarlo.
+            </p>
+            
+            <% if (typeof error !== 'undefined' && error && process.env.NODE_ENV === 'development') { %>
+                <div class="error-details">
+                    <details>
+                        <summary>Detalles del error (solo desarrollo)</summary>
+                        <pre><%= error.message %></pre>
+                        <pre><%= error.stack %></pre>
+                    </details>
                 </div>
-                <h1 class="display-4 fw-bold text-danger">500</h1>
-                <h2 class="mb-4">Server Error</h2>
-                <p class="text-muted mb-4">
-                    Something went wrong on our end. Please try again later or contact support if the problem persists.
-                </p>
-                <div class="d-flex justify-content-center gap-3">
-                    <a href="/" class="btn btn-primary">
-                        <i class="bi bi-house"></i> Go Home
-                    </a>
-                    <button onclick="location.reload()" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-clockwise"></i> Try Again
-                    </button>
-                </div>
+            <% } %>
+            
+            <div class="error-help">
+                <h5><i class="bi bi-lightbulb"></i> ¿Qué puedes hacer?</h5>
+                <ul>
+                    <li>Intenta recargar la página</li>
+                    <li>Vuelve a intentarlo en unos minutos</li>
+                    <li>Si el problema persiste, contáctanos</li>
+                </ul>
+            </div>
+            
+            <div class="error-actions">
+                <a href="/" class="btn btn-primary">
+                    <i class="bi bi-house"></i> Volver al inicio
+                </a>
+                <button onclick="location.reload()" class="btn btn-outline">
+                    <i class="bi bi-arrow-clockwise"></i> Recargar página
+                </button>
+                <a href="/contacto" class="btn btn-outline">
+                    <i class="bi bi-envelope"></i> Contactar soporte
+                </a>
             </div>
         </div>
     </div>
 </section>
+
+<style>
+.error-section {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-8) 0;
+}
+
+.error-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.error-illustration {
+    position: relative;
+    margin-bottom: var(--space-6);
+}
+
+.error-code {
+    font-size: 10rem;
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0.3;
+}
+
+.error-illustration i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4rem;
+    color: #ef4444;
+}
+
+.error-title {
+    font-size: 2rem;
+    margin-bottom: var(--space-3);
+    color: var(--text-primary);
+}
+
+.error-description {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-6);
+}
+
+.error-details {
+    margin-bottom: var(--space-6);
+    text-align: left;
+}
+
+.error-details details {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+}
+
+.error-details summary {
+    cursor: pointer;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-2);
+}
+
+.error-details pre {
+    background: var(--bg-tertiary);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    overflow-x: auto;
+    margin-top: var(--space-2);
+}
+
+.error-help {
+    margin-bottom: var(--space-6);
+    padding: var(--space-4);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    text-align: left;
+}
+
+.error-help h5 {
+    margin-bottom: var(--space-3);
+    color: var(--text-primary);
+}
+
+.error-help ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.error-help li {
+    padding: var(--space-2) 0;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.error-help li::before {
+    content: '→';
+    color: var(--accent);
+}
+
+.error-actions {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+</style>

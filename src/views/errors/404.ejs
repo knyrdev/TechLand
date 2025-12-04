@@ -1,26 +1,148 @@
 <%- layout('layouts/main') %>
 
-<section class="py-5">
+<section class="error-section">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6 text-center">
-                <div class="mb-4">
-                    <i class="bi bi-emoji-frown display-1 text-muted" style="font-size: 8rem;"></i>
-                </div>
-                <h1 class="display-4 fw-bold text-primary">404</h1>
-                <h2 class="mb-4">Page Not Found</h2>
-                <p class="text-muted mb-4">
-                    Oops! The page you're looking for doesn't exist or has been moved.
-                </p>
-                <div class="d-flex justify-content-center gap-3">
-                    <a href="/" class="btn btn-primary">
-                        <i class="bi bi-house"></i> Go Home
+        <div class="error-content">
+            <div class="error-illustration">
+                <span class="error-code">404</span>
+                <i class="bi bi-search"></i>
+            </div>
+            
+            <h1 class="error-title">Página no encontrada</h1>
+            <p class="error-description">
+                Lo sentimos, la página que buscas no existe o ha sido movida.
+            </p>
+            
+            <div class="error-suggestions">
+                <h5>Quizás buscabas:</h5>
+                <div class="suggestion-links">
+                    <a href="/productos" class="suggestion-link">
+                        <i class="bi bi-phone"></i>
+                        <span>Productos</span>
                     </a>
-                    <button onclick="history.back()" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i> Go Back
-                    </button>
+                    <a href="/servicios" class="suggestion-link">
+                        <i class="bi bi-tools"></i>
+                        <span>Servicios</span>
+                    </a>
+                    <a href="/cursos" class="suggestion-link">
+                        <i class="bi bi-mortarboard"></i>
+                        <span>Cursos</span>
+                    </a>
+                    <a href="/contacto" class="suggestion-link">
+                        <i class="bi bi-envelope"></i>
+                        <span>Contacto</span>
+                    </a>
                 </div>
+            </div>
+            
+            <div class="error-actions">
+                <a href="/" class="btn btn-primary">
+                    <i class="bi bi-house"></i> Volver al inicio
+                </a>
+                <button onclick="history.back()" class="btn btn-outline">
+                    <i class="bi bi-arrow-left"></i> Volver atrás
+                </button>
             </div>
         </div>
     </div>
 </section>
+
+<style>
+.error-section {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-8) 0;
+}
+
+.error-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.error-illustration {
+    position: relative;
+    margin-bottom: var(--space-6);
+}
+
+.error-code {
+    font-size: 10rem;
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0.3;
+}
+
+.error-illustration i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4rem;
+    color: var(--text-primary);
+}
+
+.error-title {
+    font-size: 2rem;
+    margin-bottom: var(--space-3);
+    color: var(--text-primary);
+}
+
+.error-description {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-6);
+}
+
+.error-suggestions {
+    margin-bottom: var(--space-6);
+    padding: var(--space-4);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+}
+
+.error-suggestions h5 {
+    margin-bottom: var(--space-3);
+    color: var(--text-secondary);
+}
+
+.suggestion-links {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.suggestion-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.suggestion-link:hover {
+    background: var(--bg-tertiary);
+    color: var(--accent);
+}
+
+.suggestion-link i {
+    font-size: 1.5rem;
+}
+
+.error-actions {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+</style>
