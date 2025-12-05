@@ -37,7 +37,7 @@
                         <% if (service.calificacion_promedio > 0) { %>
                             <span class="meta-item rating">
                                 <i class="bi bi-star-fill text-warning"></i>
-                                <%= service.calificacion_promedio?.toFixed(1) %>
+                                <%= parseFloat(service.calificacion_promedio || 0).toFixed(1) %>
                                 (<%= service.total_resenas || 0 %> reseñas)
                             </span>
                         <% } %>
@@ -158,13 +158,13 @@
                         <div class="card-body">
                             <div class="price-container mb-4">
                                 <% if (service.precio_oferta) { %>
-                                    <span class="current-price">$<%= service.precio_oferta.toFixed(2) %></span>
-                                    <span class="original-price">$<%= service.precio.toFixed(2) %></span>
+                                    <span class="current-price">$<%= parseFloat(service.precio_oferta).toFixed(2) %></span>
+                                    <span class="original-price">$<%= parseFloat(service.precio).toFixed(2) %></span>
                                     <span class="discount-badge">
-                                        -<%= Math.round((1 - service.precio_oferta / service.precio) * 100) %>% OFF
+                                        -<%= Math.round((1 - parseFloat(service.precio_oferta) / parseFloat(service.precio)) * 100) %>% OFF
                                     </span>
                                 <% } else { %>
-                                    <span class="current-price">$<%= service.precio.toFixed(2) %></span>
+                                    <span class="current-price">$<%= parseFloat(service.precio || service.precio_base || 0).toFixed(2) %></span>
                                 <% } %>
                             </div>
                             
@@ -297,7 +297,7 @@
                             </span>
                             <h5 class="card-title"><%= related.nombre %></h5>
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="card-price">$<%= (related.precio_oferta || related.precio).toFixed(2) %></span>
+                                <span class="card-price">$<%= parseFloat(related.precio_oferta || related.precio || related.precio_base || 0).toFixed(2) %></span>
                                 <a href="/servicios/<%= related.slug %>" class="btn btn-outline btn-sm">Ver más</a>
                             </div>
                         </div>

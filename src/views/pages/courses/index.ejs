@@ -135,7 +135,7 @@
                                             <% if (course.calificacion_promedio > 0) { %>
                                                 <span class="text-warning small">
                                                     <i class="bi bi-star-fill"></i>
-                                                    <%= course.calificacion_promedio?.toFixed(1) %>
+                                                    <%= parseFloat(course.calificacion_promedio || 0).toFixed(1) %>
                                                 </span>
                                             <% } %>
                                         </div>
@@ -160,9 +160,9 @@
                                         
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div>
-                                                <span class="card-price">$<%= (course.precio_oferta || course.precio).toFixed(2) %></span>
+                                                <span class="card-price">$<%= parseFloat(course.precio_oferta || course.precio).toFixed(2) %></span>
                                                 <% if (course.precio_oferta) { %>
-                                                    <span class="card-price-original">$<%= course.precio.toFixed(2) %></span>
+                                                    <span class="card-price-original">$<%= parseFloat(course.precio).toFixed(2) %></span>
                                                 <% } %>
                                             </div>
                                         </div>

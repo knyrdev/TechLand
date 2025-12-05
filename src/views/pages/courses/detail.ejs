@@ -34,7 +34,7 @@
                         <% if (course.calificacion_promedio > 0) { %>
                             <span class="meta-item rating">
                                 <i class="bi bi-star-fill text-warning"></i>
-                                <strong><%= course.calificacion_promedio?.toFixed(1) %></strong>
+                                <strong><%= parseFloat(course.calificacion_promedio || 0).toFixed(1) %></strong>
                                 (<%= course.total_resenas || 0 %> valoraciones)
                             </span>
                         <% } %>
@@ -234,10 +234,10 @@
                             <div class="course-reviews">
                                 <div class="reviews-summary">
                                     <div class="rating-big">
-                                        <span class="rating-number"><%= course.calificacion_promedio?.toFixed(1) || '0.0' %></span>
+                                        <span class="rating-number"><%= parseFloat(course.calificacion_promedio || 0).toFixed(1) %></span>
                                         <div class="stars">
                                             <% for (let i = 1; i <= 5; i++) { %>
-                                                <i class="bi bi-star<%= i <= Math.round(course.calificacion_promedio || 0) ? '-fill' : '' %>"></i>
+                                                <i class="bi bi-star<%= i <= Math.round(parseFloat(course.calificacion_promedio) || 0) ? '-fill' : '' %>"></i>
                                             <% } %>
                                         </div>
                                         <span class="rating-count"><%= course.total_resenas || 0 %> valoraciones</span>
@@ -287,13 +287,13 @@
                         <div class="card-body">
                             <div class="price-container mb-4">
                                 <% if (course.precio_oferta) { %>
-                                    <span class="current-price">$<%= course.precio_oferta.toFixed(2) %></span>
-                                    <span class="original-price">$<%= course.precio.toFixed(2) %></span>
+                                    <span class="current-price">$<%= parseFloat(course.precio_oferta).toFixed(2) %></span>
+                                    <span class="original-price">$<%= parseFloat(course.precio).toFixed(2) %></span>
                                     <span class="discount-badge">
-                                        -<%= Math.round((1 - course.precio_oferta / course.precio) * 100) %>% OFF
+                                        -<%= Math.round((1 - parseFloat(course.precio_oferta) / parseFloat(course.precio)) * 100) %>% OFF
                                     </span>
                                 <% } else { %>
-                                    <span class="current-price">$<%= course.precio.toFixed(2) %></span>
+                                    <span class="current-price">$<%= parseFloat(course.precio).toFixed(2) %></span>
                                 <% } %>
                             </div>
                             
@@ -348,7 +348,7 @@
                             <h5 class="card-title mt-2"><%= related.titulo %></h5>
                             <p class="text-muted small"><i class="bi bi-person"></i> <%= related.instructor %></p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="card-price">$<%= (related.precio_oferta || related.precio).toFixed(2) %></span>
+                                <span class="card-price">$<%= parseFloat(related.precio_oferta || related.precio).toFixed(2) %></span>
                                 <a href="/cursos/<%= related.slug %>" class="btn btn-outline btn-sm">Ver curso</a>
                             </div>
                         </div>

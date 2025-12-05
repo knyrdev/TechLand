@@ -224,7 +224,7 @@
                                             <span class="item-qty"><%= item.quantity %>x</span>
                                             <span class="item-name"><%= item.name %></span>
                                         </div>
-                                        <span class="item-price">$<%= (item.price * item.quantity).toFixed(2) %></span>
+                                        <span class="item-price">$<%= (parseFloat(item.price || 0) * item.quantity).toFixed(2) %></span>
                                     </div>
                                 <% }); %>
                             </div>
@@ -234,7 +234,7 @@
                             <div class="order-totals">
                                 <div class="total-row">
                                     <span>Subtotal</span>
-                                    <span>$<%= cart.subtotal?.toFixed(2) || '0.00' %></span>
+                                    <span>$<%= parseFloat(cart.subtotal || 0).toFixed(2) %></span>
                                 </div>
                                 <% if (hasProducts) { %>
                                     <div class="total-row">
@@ -245,12 +245,12 @@
                                 <% if (cart.discount && cart.discount > 0) { %>
                                     <div class="total-row text-success">
                                         <span>Descuento</span>
-                                        <span>-$<%= cart.discount.toFixed(2) %></span>
+                                        <span>-$<%= parseFloat(cart.discount).toFixed(2) %></span>
                                     </div>
                                 <% } %>
                                 <div class="total-row total-final">
                                     <span>Total</span>
-                                    <span>$<%= cart.total?.toFixed(2) || '0.00' %></span>
+                                    <span>$<%= parseFloat(cart.total || 0).toFixed(2) %></span>
                                 </div>
                             </div>
                             
@@ -266,7 +266,7 @@
                             
                             <div class="d-grid mt-4">
                                 <button type="submit" form="checkoutForm" class="btn btn-primary btn-lg">
-                                    <i class="bi bi-lock"></i> Pagar $<%= cart.total?.toFixed(2) || '0.00' %>
+                                    <i class="bi bi-lock"></i> Pagar $<%= parseFloat(cart.total || 0).toFixed(2) %>
                                 </button>
                             </div>
                             

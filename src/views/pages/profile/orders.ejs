@@ -66,7 +66,7 @@
                                     
                                     <div class="d-flex justify-content-between align-items-center mt-3">
                                         <span class="order-total">
-                                            Total: <strong>$<%= order.total?.toFixed(2) %></strong>
+                                            Total: <strong>$<%= parseFloat(order.total || 0).toFixed(2) %></strong>
                                         </span>
                                         <a href="/perfil/pedidos/<%= order.id_pedido %>" class="btn btn-outline btn-sm">
                                             Ver detalles <i class="bi bi-arrow-right"></i>

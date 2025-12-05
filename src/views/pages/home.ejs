@@ -113,9 +113,9 @@
                                 <p class="card-text"><%= product.descripcion_corta || product.descripcion?.substring(0, 80) + '...' %></p>
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <div>
-                                        <span class="card-price">$<%= (product.precio_oferta || product.precio).toFixed(2) %></span>
+                                        <span class="card-price">$<%= parseFloat(product.precio_oferta || product.precio).toFixed(2) %></span>
                                         <% if (product.precio_oferta) { %>
-                                            <span class="card-price-original">$<%= product.precio.toFixed(2) %></span>
+                                            <span class="card-price-original">$<%= parseFloat(product.precio).toFixed(2) %></span>
                                         <% } %>
                                     </div>
                                 </div>
@@ -164,7 +164,7 @@
                                 <h5 class="card-title"><%= service.nombre %></h5>
                                 <p class="card-text"><%= service.descripcion_corta || service.descripcion?.substring(0, 100) + '...' %></p>
                                 <div class="d-flex justify-content-between align-items-center mt-auto">
-                                    <span class="card-price">Desde $<%= service.precio_base?.toFixed(2) %></span>
+                                    <span class="card-price">Desde $<%= parseFloat(service.precio_base || 0).toFixed(2) %></span>
                                     <% if (service.duracion_estimada) { %>
                                         <span class="text-muted small">
                                             <i class="bi bi-clock"></i> ~<%= service.duracion_estimada %> min
@@ -290,9 +290,9 @@
                                     <span><i class="bi bi-people"></i> <%= course.total_estudiantes %> alumnos</span>
                                 </div>
                                 <div>
-                                    <span class="card-price">$<%= (course.precio_oferta || course.precio).toFixed(2) %></span>
+                                    <span class="card-price">$<%= parseFloat(course.precio_oferta || course.precio).toFixed(2) %></span>
                                     <% if (course.precio_oferta) { %>
-                                        <span class="card-price-original">$<%= course.precio.toFixed(2) %></span>
+                                        <span class="card-price-original">$<%= parseFloat(course.precio).toFixed(2) %></span>
                                     <% } %>
                                 </div>
                             </div>

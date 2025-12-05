@@ -52,11 +52,14 @@ export const getAllCourses = async (req, res) => {
         
         // Get levels for filter
         const levelsResult = await query(
-            `SELECT DISTINCT nivel FROM Cursos WHERE activo = true ORDER BY 
-             CASE nivel 
-                WHEN 'principiante' THEN 1 
-                WHEN 'intermedio' THEN 2 
-                WHEN 'avanzado' THEN 3 
+            `SELECT nivel FROM (
+                SELECT DISTINCT nivel FROM Cursos WHERE activo = true
+             ) sub
+             ORDER BY
+             CASE nivel
+                WHEN 'principiante' THEN 1
+                WHEN 'intermedio' THEN 2
+                WHEN 'avanzado' THEN 3
              END`
         );
         

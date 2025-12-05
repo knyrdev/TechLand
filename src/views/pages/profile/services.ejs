@@ -83,7 +83,7 @@
                                     
                                     <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
                                         <span class="reservation-price">
-                                            Costo: <strong>$<%= reservation.costo_final?.toFixed(2) || 'Por confirmar' %></strong>
+                                            Costo: <strong>$<%= reservation.costo_final ? parseFloat(reservation.costo_final).toFixed(2) : 'Por confirmar' %></strong>
                                         </span>
                                         <% if (reservation.estado === 'pendiente') { %>
                                             <button class="btn btn-outline btn-sm" onclick="cancelReservation('<%= reservation.id_reserva %>')">
